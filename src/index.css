@@ -5,4 +5,10 @@
 @font-face {
     font-family: 'Roboto';
     src: url('./assets/fonts/Roboto-Regular.ttf');
-  }
+}
+
+@layer base {
+    body {
+        @apply bg-[#f5f7f8];
+    }
+}
