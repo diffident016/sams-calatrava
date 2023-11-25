@@ -33,10 +33,10 @@ function Login() {
                 <img src={logo} className='w-48 h-48' />
                 <h1 className='w-[60%] text-center font-bold text-3xl'>Calatrava SHS QR Code Student Monitoring System</h1>
             </div>
-            <div className='w-[45%] h-full flex flex-row '>
-                <div className='flex flex-col items-center pt-24'>
-                    <h1 className='font-bold text-3xl text-[#1F2F3D]'>Log In</h1>
-                    <p className='font-roboto text-lg py-4'>Enter your email and password to Log In.</p>
+            <div className='w-[45%] h-full flex flex-row p-24'>
+                <div className='w-full flex flex-col items-center border rounded-lg shadow-sm bg-white pt-8'>
+                    <h1 className='font-bold text-2xl text-[#1F2F3D]'>LOGIN</h1>
+                    <p className='font-roboto py-4'>Enter your email and password to Log In.</p>
                     <div className='z-10 flex flex-col w-[500px] items-center'>
                         <form onSubmit={handleSubmit} className='flex flex-col z-10 w-[350px] py-4 font-arimo text-[#1F2F3D]'>
                             <label className='py-2 text-sm font-bold'>Email Address</label>
