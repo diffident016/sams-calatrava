@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import logo from '../assets/images/logo.png'
+import { useAuth } from "../auth/AuthContext";
 import {
     Home,
     Person,
@@ -10,6 +11,8 @@ import {
 } from '@mui/icons-material';
 
 function Sidebar() {
+
+    const { logout } = useAuth();
 
     const [index, setIndex] = useState(0)
     const items = [
@@ -40,7 +43,7 @@ function Sidebar() {
                     }
                 </div>
                 <div className='absolute bottom-2 w-full h-12 px-3 cursor-pointer'>
-                    <div className='flex flex-row text-[#607d8b] px-6 gap-4'>
+                    <div onClick={() => { logout() }} className='cursor-pointer flex flex-row text-[#607d8b] px-6 gap-4'>
                         <Logout color='inherit' />
                         <h1 className='font-bold'>Logout</h1>
                     </div>

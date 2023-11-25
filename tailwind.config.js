@@ -8,6 +8,7 @@ export default {
     extend: {
       fontFamily: {
         'roboto': ['Roboto'],
+        'roboto-bold': ['Roboto-bold']
       }
     },
   },
