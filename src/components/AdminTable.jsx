@@ -10,7 +10,8 @@ function AdminTable() {
                 "id": 2020302020,
                 "name": 'Robby William Oblig',
                 "grade_section": 'Grade 12 - STEM',
-                "datetime": '2023-11-25 - 2:30PM',
+                "date": 'Monday, 2023-11-25',
+                "time": '2:31PM',
                 "status": 0,
             },
             {
@@ -18,14 +19,16 @@ function AdminTable() {
                 "id": 2020302021,
                 "name": 'Jomarie Ysteen Agnes',
                 "grade_section": 'Grade 12 - HUMSS',
-                "datetime": '2023-11-25 - 2:30PM',
+                "date": 'Monday, 2023-11-25',
+                "time": '3:30PM',
                 "status": 0,
             }, {
                 "no": 3,
                 "id": 2020302022,
                 "name": 'Ryand Sacote',
                 "grade_section": 'Grade 12 - STEM',
-                "datetime": '2023-11-25 - 2:30PM',
+                "date": 'Monday, 2023-11-25',
+                "time": '5:30PM',
                 "status": 0,
             }
         ]
@@ -41,7 +44,7 @@ function AdminTable() {
             {
                 name: "Student ID",
                 selector: (row) => row.id,
-                width: '150px'
+                width: '130px'
             },
             {
                 name: "Name",
@@ -54,13 +57,28 @@ function AdminTable() {
                 width: '150px'
             },
             {
-                name: "Date & Time",
-                selector: (row) => row.datetime,
-                width: '200px'
+                name: "Date",
+                selector: (row) => row.date,
+                width: '180px'
+            },
+            {
+                name: "Time",
+                selector: (row) => row.time,
+                width: '100px'
             },
             {
                 name: "Status",
-                selector: (row) => row.status,
+                cell: function (row) {
+                    return (
+                        <div className="flex bg-[#339655] rounded-sm items-center justify-center w-[100px] h-[24px] cursor-pointer">
+                            <p
+                                className=" px-2 py-1 text-white text-xs"
+                            >
+                                INSIDE
+                            </p>
+                        </div>
+                    )
+                },
                 width: '100px'
             },
             // {
@@ -84,7 +102,7 @@ function AdminTable() {
     );
 
     return (
-        <div className='flex-1 h-96 border shadow-sm bg-white rounded-xl'>
+        <div className='flex-1 h-full border shadow-sm bg-white rounded-xl'>
             <div className='font-roboto text-[#607d8b] flex flex-col p-5 gap-2'>
                 <h1 className='font-roboto-bold text-lg'>Student Record</h1>
                 <DataTable
