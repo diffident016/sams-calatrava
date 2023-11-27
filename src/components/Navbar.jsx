@@ -14,7 +14,7 @@ function Navbar({ userType, screen }) {
                     <h1 className='text-sm '>Dashboard / Home</h1>
                     <h1 className='text-md font-bold'>Home</h1>
                 </div>
-                {screen != 1 && <div className='flex-1 flex flex-row text-[#607d8b] gap-2 items-center mx-4 cursor-pointer'>
+                {screen < 1 && <div className='flex-1 flex flex-row text-[#607d8b] gap-2 items-center mx-4 cursor-pointer'>
                     {userType === 1 ? <QrCodeRounded color='inherit' /> : <PersonAdd color='inherit' />}
                     <h1 className='text-sm font-roboto-bold'>{userType === 1 ? 'Scan QR Code' : 'Add Student'}</h1>
                 </div>}

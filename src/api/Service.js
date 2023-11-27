@@ -47,12 +47,42 @@ const addStudent = (student) => {
 
 }
 
+const addGuardian = (guardian) => {
+
+    var guardian = guardian;
+    guardian['dateAdded'] = Timestamp.now()
+
+    return addDoc(collection(db, "guardians"), {
+        guardian
+    });
+
+}
+
+const editGuardianInfo = (docId, guardian) => {
+
+    return updateDoc(doc(db, "guardians", docId), {
+        guardian
+    });
+}
+
+const deleteGuardian = (docId) => {
+
+    return deleteDoc(doc(db, "guardians", docId))
+}
+
+const getAllGuardians = () => {
+    const guardianRef = collection(db, "guardians");
+
+    return guardianRef;
+}
+
 const editStudentInfo = (docId, student) => {
 
     return updateDoc(doc(db, "students", docId), {
         student
     });
 }
+
 
 const deleteStudent = (docId) => {
 
@@ -71,9 +101,13 @@ const getUser = (userId) => {
 
 export {
     addStudent,
+    addGuardian,
     getAllStudents,
+    getAllGuardians,
     editStudentInfo,
+    editGuardianInfo,
     deleteStudent,
+    deleteGuardian,
     addUserProfile,
     getUser,
     ref,

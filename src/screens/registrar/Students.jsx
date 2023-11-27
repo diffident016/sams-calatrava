@@ -1,16 +1,15 @@
 import React, { useEffect, useState, useMemo } from 'react'
 import DataTable from "react-data-table-component";
-import EmptyTable from '../components/EmptyTable';
-import { studentTable } from '../models/TableColumns';
-import { deleteStudent, getAllStudents, onSnapshot, Timestamp } from '../api/Service';
+import EmptyTable from '../../components/EmptyTable';
+import { studentTable } from '../../models/TableColumns';
+import { deleteStudent, getAllStudents, onSnapshot, Timestamp } from '../../api/Service';
 import { PersonAdd, Edit, Delete } from '@mui/icons-material';
 import { format } from 'date-fns'
-import Loader from '../components/Loader'
-import ShowDialog from '../components/ShowDialog';
+import Loader from '../../components/Loader'
+import ShowDialog from '../../components/ShowDialog';
 
-function Students({ addStudent, setAddStudent, setEditStudent, setAlert, setShowAlert, type }) {
+function Students({ students, setStudents, setAddStudent, setEditStudent, setAlert, setShowAlert, type }) {
 
-    const [students, setStudents] = useState([]);
     const [fetchState, setFetchState] = useState(0);
     const [showDialog, setShowDialog] = useState(false);
     const [selectedRow, setSelectedRow] = useState('');
@@ -174,7 +173,11 @@ function Students({ addStudent, setAddStudent, setEditStudent, setAlert, setShow
                     }
                     progressPending={fetchState == 0 ? true : false}
                     progressComponent={<Loader />}
-                    noDataComponent={<EmptyTable setAddStudent={setAddStudent} />}
+                    noDataComponent={
+                        <EmptyTable
+                            setEntry={setAddStudent}
+                            message={'The are no students on the record.'}
+                            cta={'Add'} />}
                     fixedHeader
                     fixedHeaderScrollHeight="330px"
                     pagination
@@ -194,4 +197,4 @@ function Students({ addStudent, setAddStudent, setEditStudent, setAlert, setShow
     )
 }
 
-export default Students
+export { Students }

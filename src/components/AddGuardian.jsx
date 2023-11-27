@@ -2,40 +2,28 @@ import React, { useEffect, useState } from 'react'
 import { PersonAdd, Close } from '@mui/icons-material'
 import { Autocomplete, TextField } from '@mui/material'
 import ShowDialog from './ShowDialog'
-import { Student } from '../models/Student'
-import { addStudent, editStudentInfo } from '../api/Service'
+import { Guardian } from '../models/Guardian'
+import { addGuardian, editGuardianInfo } from '../api/Service'
 import { Alert } from '../models/Alert'
 
-function AddStudent({
-    show,
-    close,
-    setAlert,
-    setShowAlert,
-    type,
-    editStudent,
-    setEditStudent,
-    guardiansEntry
-}) {
+function AddGuardian({ show, close, setAlert, setShowAlert, type, editGuardian, setEditGuardian }) {
 
     const [showDialog, setShowDialog] = useState(false)
-    const { student, updateStudent } = Student();
+    const { guardian, updateGuardian } = Guardian();
     const [update, setUpdate] = useState(false);
 
     useEffect(() => {
-        if (!editStudent) return
+        if (!editGuardian) return
 
         setUpdate(true);
-        updateStudent({
-            firstname: editStudent.firstname,
-            mi: editStudent.mi,
-            lastname: editStudent.lastname,
-            grade_section: editStudent.grade_section,
-            guardian: editStudent.guardian,
-            dateAdded: editStudent.dateAdded,
-            studentId: editStudent.studentId,
-            qr_data: editStudent.qr_data
+        updateGuardian({
+            firstname: editGuardian.firstname,
+            mi: editGuardian.mi,
+            lastname: editGuardian.lastname,
+            phone: editGuardian.phone,
+            dateAdded: editGuardian.dateAdded,
         })
-    }, [editStudent])
+    }, [editGuardian])
 
     const handleSubmit = (e) => {
         e.preventDefault()
@@ -48,16 +36,16 @@ function AddStudent({
         try {
 
             if (update) {
-                await editStudentInfo(editStudent.docId, student)
+                await editGuardianInfo(editGuardian.docId, guardian)
             } else {
-                await addStudent(student)
+                await addGuardian(guardian)
             }
 
             setAlert({
                 type: type.SUCCESS,
                 message: !update ?
-                    'Student added to the record successfully.'
-                    : 'Student info updated successfully.',
+                    'Guardian has been added to the record successfully.'
+                    : 'Guardian info updated successfully.',
                 duration: 4000
             })
             setShowAlert(true)
@@ -77,15 +65,14 @@ function AddStudent({
     }
 
     const clearForm = () => {
-        updateStudent({
+        updateGuardian({
             firstname: '',
             mi: '',
             lastname: '',
-            grade_section: '',
-            guardian: null
+            phone: '',
         })
 
-        setEditStudent(null)
+        setEditGuardian(null)
         setUpdate(false)
         close(false)
     }
@@ -94,24 +81,24 @@ function AddStudent({
         <>
             {show && (<div className='z-20 absolute h-full w-full bg-[#f5f7f8]/80'>
                 <div className='w-full h-full flex items-center justify-center'>
-                    <div className='flex flex-col p-6 w-[450px] h-[500px] bg-white border shadow-sm rounded-lg text-[#607d8b] font-roboto'>
+                    <div className='flex flex-col p-6 w-[450px] h-[450px] bg-white border shadow-sm rounded-lg text-[#607d8b] font-roboto'>
                         <div className='flex flex-row justify-between'>
                             <PersonAdd color='inherit' />
                             <Close onClick={() => {
                                 clearForm()
                             }} className='cursor-pointer' />
                         </div>
-                        <h1 className='pt-4 pb-2 font-roboto-bold'>{!update ? 'Add new Student' : 'Update Student'}</h1>
+                        <h1 className='pt-4 pb-2 font-roboto-bold'>{!update ? 'Add new Guardian' : 'Update Guardian'}</h1>
                         <p className='text-sm'>Please fill the information below.</p>
                         <form onSubmit={handleSubmit} className='flex flex-col py-5 w-full gap-2'>
                             <div className='flex flex-row w-full gap-2'>
                                 <div className='flex-1'>
                                     <label className='py-1 text-xs font-roboto-bold'>First Name <span className='text-[#dc2626]'>*</span></label>
                                     <input
-                                        value={student.firstname}
+                                        value={guardian.firstname}
                                         required
                                         onChange={(e) => {
-                                            updateStudent({ firstname: e.target.value })
+                                            updateGuardian({ firstname: e.target.value })
                                         }}
                                         type='text'
                                         className='w-full text-sm h-9 border border-[#cecece]  rounded-md focus:outline-none px-2' />
@@ -120,9 +107,9 @@ function AddStudent({
                                     <label className='py-1 text-xs font-roboto-bold'>M.I. <span className='text-[#dc2626]'>*</span></label>
                                     <input
                                         required
-                                        value={student.mi}
+                                        value={guardian.mi}
                                         onChange={(e) => {
-                                            updateStudent({ mi: e.target.value })
+                                            updateGuardian({ mi: e.target.value })
                                         }}
                                         type='text'
                                         className='w-full text-sm h-9 border border-[#cecece]  rounded-md focus:outline-none px-2' />
@@ -132,46 +119,25 @@ function AddStudent({
                                 <label className='py-1 text-xs font-roboto-bold'>Last Name <span className='text-[#dc2626]'>*</span></label>
                                 <input
                                     required
-                                    value={student.lastname}
+                                    value={guardian.lastname}
                                     onChange={(e) => {
-                                        updateStudent({ lastname: e.target.value })
+                                        updateGuardian({ lastname: e.target.value })
                                     }}
                                     type='text'
                                     className='w-full text-sm h-9 border border-[#cecece]  rounded-md focus:outline-none px-2' />
                             </div>
                             <div className='flex-1'>
-                                <label className='py-1 text-xs font-roboto-bold'>Grade & Section <span className='text-[#dc2626]'>*</span></label>
-                                <Autocomplete
-                                    id="guardian-box"
-                                    required={true}
-                                    value={student.grade_section}
-                                    className='text-white'
-                                    options={['Grade 11 - CSS', 'Grade 12 - CSS']}
-                                    sx={{ width: '100%', height: '36px' }}
-                                    size='small'
-                                    inputValue={student.grade_section}
-                                    onInputChange={(event, newInputValue) => {
-                                        updateStudent({ grade_section: newInputValue })
+                                <label className='py-1 text-xs font-roboto-bold'>Phone Number <span className='text-[#dc2626]'>*</span></label>
+                                <input
+                                    required
+                                    value={guardian.phone}
+                                    onChange={(e) => {
+                                        updateGuardian({ phone: e.target.value })
                                     }}
-                                    renderInput={(params) => <TextField {...params} />}
-                                />
+                                    type='text'
+                                    className='w-full text-sm h-9 border border-[#cecece]  rounded-md focus:outline-none px-2' />
                             </div>
-                            <div className='flex-1'>
-                                <label className='py-2 text-xs font-roboto-bold'>Student Guardian</label>
-                                <Autocomplete
-                                    id="guardian-box"
-                                    className='text-white'
-                                    options={guardiansEntry}
-                                    sx={{ width: '100%', height: '36px' }}
-                                    size='small'
-                                    value={student.guardian}
-                                    inputValue={student.guardian}
-                                    onInputChange={(event, newInputValue) => {
-                                        updateStudent({ guardian: newInputValue })
-                                    }}
-                                    renderInput={(params) => <TextField {...params} />}
-                                />
-                            </div>
+
                             <div className='flex flex-row w-full py-6 justify-end text-white text-sm font-roboto-bold gap-2'>
                                 <button type='submit' className='w-20 h-8 bg-[#49a54d] rounded-md'>{!update ? 'Add' : 'Update'}</button>
                                 <button onClick={() => {
@@ -179,8 +145,8 @@ function AddStudent({
                                 }} type='reset' className='w-20 h-8 text-[#607d8b] rounded-sm'>Cancel</button>
                             </div>
                             <ShowDialog
-                                title={!update ? 'Add Student' : 'Update Student'}
-                                description={`Are you sure you want to ${!update ? 'add' : 'update'} student?`}
+                                title={!update ? 'Add Guardian' : 'Update Guardian'}
+                                description={`Are you sure you want to ${!update ? 'add' : 'update'} guardian?`}
                                 open={showDialog}
                                 close={setShowDialog}
                                 callback={dialogCallback} />
@@ -192,4 +158,4 @@ function AddStudent({
     )
 }
 
-export default AddStudent
+export default AddGuardian

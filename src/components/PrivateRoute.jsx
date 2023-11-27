@@ -1,14 +1,16 @@
 import React, { useState } from 'react'
-import { Navigate } from 'react-router-dom'
+import { Navigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import { UserProfile } from '../models/UserProfile';
 import Homepage from '../pages/Homepage';
 import { getUser } from '../api/Service'
 import Loader from './Loader';
+import Login from '../pages/Login';
 
 function PrivateRoute({ children }) {
 
     const { currentUser } = useAuth();
+    const { pathname } = useLocation();
 
     const [isLoading, setLoading] = useState(true);
     const { profile, updateProfile } = UserProfile();
@@ -33,15 +35,17 @@ function PrivateRoute({ children }) {
 
         return (
             <>
-                {isLoading ?
-                    <Loader message='Loading, please wait...' /> :
-                    <Homepage userType={profile.userType} />
-                }
+                {(pathname === '/') ?
+                    (isLoading ?
+                        <Loader message='Loading, please wait...' /> :
+                        <Homepage userType={profile.userType} />)
+                    : <Navigate to='/' />}
             </>
         )
     }
 
-    return <Navigate to='/login' />
+    return <Login />
+
 }
 
 export default PrivateRoute
