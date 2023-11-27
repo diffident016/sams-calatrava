@@ -1,14 +1,17 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import DataTable from "react-data-table-component";
 import { QrScanner } from '@yudiel/react-qr-scanner';
-import { format } from 'date-fns'
+import { format, differenceInMinutes } from 'date-fns'
+import { addRecord, getAllRecords, Timestamp, onSnapshot } from '../api/Service';
 
-function CheckAttendance({ students = [] }) {
+function CheckAttendance({ students = [], setAlert, setShowAlert, type, }) {
 
     const [delay, setDelay] = useState(false)
     const [videoSelect, setVideoSelect] = useState([])
     const [labels, setLabels] = useState([])
     const [scanned, setScanned] = useState(null)
+    const [records, setRecords] = useState([])
+    const [fetchState, setFetchState] = useState(0)
 
     const status = [
         {
@@ -22,6 +25,10 @@ function CheckAttendance({ students = [] }) {
         {
             status: -1,
             message: 'An error occured.'
+        },
+        {
+            status: -2,
+            message: 'Only allowed to scan every minute.'
         }
     ]
 
@@ -29,22 +36,111 @@ function CheckAttendance({ students = [] }) {
         console.log(e)
     }
 
-    const handleScan = (data) => {
+    const checkStatus = (id, date) => {
 
-        const student = getStudent(data)
+        const r = records.filter((record) => {
+            return record.studentId == id
+        })
 
-        console.log(student)
+        r.sort((a, b) => b.dateRecord - a.dateRecord);
+
+        const record = r[0];
+
+        if (!record) return 0
+
+        const interval = differenceInMinutes(
+            date.toDate(),
+            record.dateRecord.toDate(),
+        )
+
+        if (interval < 1) return -2
+
+        return (record.status == 0) ? 1 : 0
+    }
+
+    const handleScan = async (data) => {
+
+        let student = getStudent(data)
+
         setScanned(student)
+
+        if (student.status != 2) return student
+
+        student = student.student
+
+        const dateRecord = Timestamp.now()
+        const st = checkStatus(student.studentId, dateRecord)
+
+        if (st == -2) return setScanned(status[3])
+
+        const record = {
+            studentId: student.studentId,
+            name: student.name,
+            grade_section: student.grade_section,
+            dateRecord: dateRecord,
+            status: st
+        }
+
+        try {
+            await addRecord(record)
+
+        } catch (e) {
+            console.log(e)
+        }
     }
 
     const getStudent = (id) => {
 
         if (students.length < 1) return status[0]
 
+
         const student = students.find(student => student.studentId == id)
 
         return !student ? status[1] : { status: 2, student }
     }
+
+    useEffect(() => {
+        const query = getAllRecords()
+
+        try {
+            const unsub = onSnapshot(query, snapshot => {
+                if (!snapshot) {
+                    setFetchState(-1)
+                    return
+                }
+
+                if (snapshot.empty) {
+                    setFetchState(2)
+                    return
+                }
+
+                const records = snapshot.docs.map((doc, index) => {
+                    const data = doc.data()['record'];
+
+                    return {
+                        no: index + 1,
+                        studentId: data.studentId,
+                        name: data.name,
+                        dateRecord: data.dateRecord,
+                        status: data.status
+                    }
+                });
+
+                records.sort((a, b) => b.dateRecord - a.dateRecord);
+
+                setRecords(records)
+                setFetchState(1)
+            })
+
+            return () => {
+                unsub()
+            }
+
+        } catch {
+            setFetchState(-1)
+        }
+
+    }, [])
 
     useEffect(() => {
 
@@ -83,27 +179,31 @@ function CheckAttendance({ students = [] }) {
             },
             {
                 name: "Date Record",
-                selector: (row) => format(row.dateAdded.toDate(), 'LL/dd/yyyy'),
+                selector: (row) => format(row.dateRecord.toDate(), 'LL/dd/yyyy'),
                 width: '110px'
             },
             {
                 name: "Time",
-                selector: (row) => format(row.dateAdded.toDate(), 'HH:MM a'),
+                selector: (row) => format(row.dateRecord.toDate(), 'hh:mm a'),
                 width: '110px'
             },
             {
                 name: "Status",
                 cell: function (row) {
 
-                    let data = row.data
-                    data['docId'] = row.docId
 
                     return (
-                        <div className="flex bg-[#339655] rounded-sm items-center justify-center w-[90px] h-[20px] cursor-pointer">
-                            <p className="font-roboto-bold text-white text-xs">
-                                INSIDE
-                            </p>
-                        </div>
+                        row.status == 0 ?
+                            <div className="flex bg-[#339655] rounded-sm items-center justify-center w-[90px] h-[20px] cursor-pointer">
+                                <p className="font-roboto-bold text-white text-xs">
+                                    INSIDE
+                                </p>
+                            </div> :
+                            <div className="flex bg-[#fb0200] rounded-sm items-center justify-center w-[90px] h-[20px] cursor-pointer">
+                                <p className="font-roboto-bold text-white text-xs">
+                                    OUTSIDE
+                                </p>
+                            </div>
                     )
                 },
                 width: '100px'
@@ -114,17 +214,19 @@ function CheckAttendance({ students = [] }) {
     return (
         <div className='w-full h-full text-[#607d8b]'>
             <div className='flex flex-row w-full h-full gap-2'>
-                <div className='flex-1 h-full bg-white border shadow-sm rounded-lg p-4'>
-                    <h1 className='font-roboto-bold'>Recorded Attendance</h1>
+                <div className='flex-1 h-full flex flex-col bg-white border shadow-sm rounded-lg p-4 gap-4'>
+                    <div className=''>
+                        <h1 className='font-roboto-bold'>Recorded Attendance</h1>
+                    </div>
                     {
-                        (!students || students.length < 0) ?
+                        (fetchState != 1) ?
                             <div className='flex flex-row w-full h-full justify-center items-center'>
                                 <p className='text-sm'>No records, scan QR to add.</p>
                             </div>
                             : <DataTable
                                 className="font-roboto rounded-md"
                                 columns={columns}
-                                data={students}
+                                data={records}
                                 customStyles={
                                     {
                                         rows: {
@@ -145,7 +247,7 @@ function CheckAttendance({ students = [] }) {
                                     }
                                 }
                                 fixedHeader
-                                fixedHeaderScrollHeight="330px"
+                                fixedHeaderScrollHeight="370px"
                                 pagination
                             />
                     }

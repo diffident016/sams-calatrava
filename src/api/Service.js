@@ -32,6 +32,19 @@ const addUserProfile = (userId, profile) => {
 
 }
 
+const addRecord = (record) => {
+
+    return addDoc(collection(db, "records"), {
+        record
+    });
+}
+
+const getAllRecords = () => {
+    const recordRef = collection(db, "records");
+
+    return recordRef;
+}
+
 const addStudent = (student) => {
 
     const id = String(Date.now()).slice(5, 13)
@@ -115,5 +128,7 @@ export {
     getDownloadURL,
     storage,
     onSnapshot,
-    Timestamp
+    Timestamp,
+    addRecord,
+    getAllRecords
 }

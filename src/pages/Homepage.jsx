@@ -48,7 +48,14 @@ function Homepage({ profile, userType }) {
                         students={students}
                         type={type} />
         },
-        { header: 'Dashboard / Check Attendance', component: <CheckAttendance students={students} /> },
+        {
+            header: 'Dashboard / Check Attendance', component:
+                <CheckAttendance
+                    students={students}
+                    setShowAlert={setShowAlert}
+                    setAlert={setAlert}
+                    type={type} />
+        },
         {
             header: 'Dashboard / Guardians', component:
                 userType === 1 ?
