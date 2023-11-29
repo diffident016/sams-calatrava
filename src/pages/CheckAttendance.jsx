@@ -3,15 +3,22 @@ import DataTable from "react-data-table-component";
 import { QrScanner } from '@yudiel/react-qr-scanner';
 import { format, differenceInMinutes } from 'date-fns'
 import { addRecord, getAllRecords, Timestamp, onSnapshot } from '../api/Service';
+import { DateCalendar } from '@mui/x-date-pickers';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
+import { KeyboardArrowDown } from '@mui/icons-material';
 
-function CheckAttendance({ students = [], setAlert, setShowAlert, type, }) {
+function CheckAttendance({ students = [], setAlert, setShowAlert, type, records, fetchState }) {
 
     const [delay, setDelay] = useState(false)
     const [videoSelect, setVideoSelect] = useState([])
     const [labels, setLabels] = useState([])
     const [scanned, setScanned] = useState(null)
-    const [records, setRecords] = useState([])
-    const [fetchState, setFetchState] = useState(0)
+    const [searchItems, setSearchItems] = useState([])
+    const [query, setQuery] = useState('')
+    const [date, setDate] = useState(new Date())
+    const [datepick, setDatePick] = useState(false)
 
     const status = [
         {
@@ -33,12 +40,16 @@ function CheckAttendance({ students = [], setAlert, setShowAlert, type, }) {
     ]
 
     const handleError = (e) => {
-        console.log(e)
+        return setScanned(status[2])
     }
 
-    const checkStatus = (id, date) => {
+    const checkStatus = (id, d) => {
 
-        const r = records.filter((record) => {
+        let temp = records[format(date, 'yyyy/MM/dd')];
+
+        if (!temp) return 0
+
+        const r = temp.filter((record) => {
             return record.studentId == id
         })
 
@@ -49,7 +60,7 @@ function CheckAttendance({ students = [], setAlert, setShowAlert, type, }) {
         if (!record) return 0
 
         const interval = differenceInMinutes(
-            date.toDate(),
+            d.toDate(),
             record.dateRecord.toDate(),
         )
 
@@ -93,54 +104,23 @@ function CheckAttendance({ students = [], setAlert, setShowAlert, type, }) {
 
         if (students.length < 1) return status[0]
 
-
         const student = students.find(student => student.studentId == id)
 
         return !student ? status[1] : { status: 2, student }
     }
 
-    useEffect(() => {
-        const query = getAllRecords()
+    const search = (query) => {
 
-        try {
-            const unsub = onSnapshot(query, snapshot => {
-                if (!snapshot) {
-                    setFetchState(-1)
-                    return
-                }
+        var newRecords = records[format(date, 'yyyy/MM/dd')];
 
-                if (snapshot.empty) {
-                    setFetchState(2)
-                    return
-                }
+        newRecords = newRecords.filter((record) => {
+            var name = record.name.toLowerCase().indexOf(query.toLowerCase());
+            var id = record.studentId.indexOf(query.toLowerCase());
+            return name !== -1 || id !== -1;
+        });
 
-                const records = snapshot.docs.map((doc, index) => {
-                    const data = doc.data()['record'];
-
-                    return {
-                        no: index + 1,
-                        studentId: data.studentId,
-                        name: data.name,
-                        dateRecord: data.dateRecord,
-                        status: data.status
-                    }
-                });
-
-                records.sort((a, b) => b.dateRecord - a.dateRecord);
-
-                setRecords(records)
-                setFetchState(1)
-            })
-
-            return () => {
-                unsub()
-            }
-
-        } catch {
-            setFetchState(-1)
-        }
-
-    }, [])
+        return newRecords;
+    }
 
     useEffect(() => {
 
@@ -162,11 +142,6 @@ function CheckAttendance({ students = [], setAlert, setShowAlert, type, }) {
 
     const columns = useMemo(
         () => [
-            {
-                name: "No.",
-                selector: (row) => row.no,
-                width: '60px'
-            },
             {
                 name: "Student ID",
                 selector: (row) => row.studentId,
@@ -191,7 +166,6 @@ function CheckAttendance({ students = [], setAlert, setShowAlert, type, }) {
                 name: "Status",
                 cell: function (row) {
 
-
                     return (
                         row.status == 0 ?
                             <div className="flex bg-[#339655] rounded-sm items-center justify-center w-[90px] h-[20px] cursor-pointer">
@@ -215,8 +189,51 @@ function CheckAttendance({ students = [], setAlert, setShowAlert, type, }) {
         <div className='w-full h-full text-[#607d8b]'>
             <div className='flex flex-row w-full h-full gap-2'>
                 <div className='flex-1 h-full flex flex-col bg-white border shadow-sm rounded-lg p-4 gap-4'>
-                    <div className=''>
+                    <div className='h-16 flex flex-col'>
                         <h1 className='font-roboto-bold'>Recorded Attendance</h1>
+                        <div className='flex flex-row my-4 w-full items-center justify-between'>
+                            <div className='flex flex-row w-60 items-center gap-1'>
+                                <input
+                                    value={query}
+                                    onChange={(e) => {
+                                        const query = e.target.value
+                                        setQuery(query)
+                                        setSearchItems(search(query))
+                                    }}
+                                    className='px-2 text-sm rounded-md h-8 w-52 border focus:outline-none'
+                                    placeholder='Search student...' />
+                                {query != '' && <p
+                                    onClick={() => { setQuery('') }}
+                                    className='text-sm cursor-pointer opacity-60'>clear</p>}
+                            </div>
+                            <div className='relative '>
+                                <div className='flex flex-row items-center gap-2 select-none w-full'>
+                                    <p className='text-sm'>Select Date: </p>
+                                    <div
+                                        onClick={() => {
+                                            setDatePick(!datepick)
+                                        }}
+                                        className='w-[190px] cursor-pointer flex flex-row items-center pl-2 pr-1 gap-1 h-8 border justify-between rounded-md'>
+                                        <p className='text-sm read-only'>{format(date, 'EEEE, MM/dd/yyyy')}</p>
+                                        <KeyboardArrowDown fontSize='small' />
+                                    </div>
+                                </div>
+
+                                {datepick && <div className='absolute z-10 border shadow-sm bg-white ml-[-50px]'>
+                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                        <DateCalendar
+                                            defaultValue={dayjs(date)}
+                                            maxDate={dayjs(new Date())}
+                                            onChange={(e) => {
+                                                setDatePick(!datepick)
+                                                setDate(e.$d)
+                                            }}
+                                        />
+                                    </LocalizationProvider>
+                                </div>}
+                            </div>
+
+                        </div>
                     </div>
                     {
                         (fetchState != 1) ?
@@ -226,7 +243,7 @@ function CheckAttendance({ students = [], setAlert, setShowAlert, type, }) {
                             : <DataTable
                                 className="font-roboto rounded-md"
                                 columns={columns}
-                                data={records}
+                                data={(query != '') ? searchItems : records[format(date, 'yyyy/MM/dd')]}
                                 customStyles={
                                     {
                                         rows: {
@@ -246,6 +263,7 @@ function CheckAttendance({ students = [], setAlert, setShowAlert, type, }) {
                                         }
                                     }
                                 }
+                                persistTableHead
                                 fixedHeader
                                 fixedHeaderScrollHeight="370px"
                                 pagination

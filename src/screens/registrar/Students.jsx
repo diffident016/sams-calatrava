@@ -8,54 +8,10 @@ import { format } from 'date-fns'
 import Loader from '../../components/Loader'
 import ShowDialog from '../../components/ShowDialog';
 
-function Students({ students, setStudents, setAddStudent, setEditStudent, setAlert, setShowAlert, type }) {
+function Students({ students, fetchState, setAddStudent, setEditStudent, setAlert, setShowAlert, type }) {
 
-    const [fetchState, setFetchState] = useState(0);
     const [showDialog, setShowDialog] = useState(false);
     const [selectedRow, setSelectedRow] = useState('');
-
-    useEffect(() => {
-        const query = getAllStudents()
-
-        try {
-            const unsub = onSnapshot(query, snapshot => {
-                if (!snapshot) {
-                    setFetchState(-1)
-                    return
-                }
-
-                if (snapshot.empty) {
-                    setFetchState(2)
-                    return
-                }
-
-                const students = snapshot.docs.map((doc, index) => {
-                    const data = doc.data()['student'];
-
-                    return {
-                        no: index + 1,
-                        docId: doc.id,
-                        studentId: data.studentId,
-                        grade_section: data.grade_section,
-                        guardian: data.guardian,
-                        name: data.firstname + " " + data.mi + " " + data.lastname,
-                        dateAdded: data.dateAdded,
-                        data: data
-                    };
-                });
-
-                setStudents(students)
-                setFetchState(1)
-            })
-
-            return () => {
-                unsub()
-            }
-
-        } catch {
-            setFetchState(-1)
-        }
-    }, [])
 
     const handleDelete = async (docId) => {
 
@@ -171,6 +127,7 @@ function Students({ students, setStudents, setAddStudent, setEditStudent, setAle
                             }
                         }
                     }
+                    persistTableHead
                     progressPending={fetchState == 0 ? true : false}
                     progressComponent={<Loader />}
                     noDataComponent={
@@ -179,7 +136,7 @@ function Students({ students, setStudents, setAddStudent, setEditStudent, setAle
                             message={'The are no students on the record.'}
                             cta={'Add'} />}
                     fixedHeader
-                    fixedHeaderScrollHeight="330px"
+                    fixedHeaderScrollHeight="370px"
                     pagination
                 />
             </div>

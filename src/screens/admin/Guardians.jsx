@@ -104,10 +104,11 @@ function Guardians() {
                             }
                         }
                     }
+                    persistTableHead
                     progressPending={fetchState == 0 ? true : false}
                     progressComponent={<Loader />}
                     fixedHeader
-                    fixedHeaderScrollHeight="330px"
+                    fixedHeaderScrollHeight="370px"
                     pagination
                 />
             </div>

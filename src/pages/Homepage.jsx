@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Navbar from '../components/Navbar'
 import Sidebar from '../components/Sidebar'
 import Dashboard from './Dashboard';
@@ -12,6 +12,8 @@ import AddStudent from '../components/AddStudent';
 import UserAlert from '../components/UserAlert';
 import { Alert } from '../models/Alert';
 import AddGuardian from '../components/AddGuardian';
+import { getAllRecords, getAllStudents, onSnapshot, Timestamp } from '../api/Service';
+import { format } from 'date-fns'
 
 function Homepage({ profile, userType }) {
 
@@ -23,11 +25,120 @@ function Homepage({ profile, userType }) {
     const [editGuardian, setEditGuardian] = useState(null)
     const [addGuardian, setAddGuarian] = useState(false)
     const [guardiansEntry, setGuardiansEntry] = useState([])
+    const [records, setRecords] = useState([])
+    const [recordFetch, setRecordFetch] = useState(0)
+    const [studentFetch, setStudentFetch] = useState(0)
 
     const { alert, setAlert, type } = Alert();
 
+    useEffect(() => {
+        const query = getAllStudents()
+
+        try {
+            const unsub = onSnapshot(query, snapshot => {
+                if (!snapshot) {
+                    setStudentFetch(-1)
+                    return
+                }
+
+                if (snapshot.empty) {
+                    setStudentFetch(2)
+                    return
+                }
+
+                const students = snapshot.docs.map((doc, index) => {
+                    const data = doc.data()['student'];
+
+                    return {
+                        no: index + 1,
+                        docId: doc.id,
+                        studentId: data.studentId,
+                        grade_section: data.grade_section,
+                        guardian: data.guardian,
+                        name: data.firstname + " " + data.mi + " " + data.lastname,
+                        dateAdded: data.dateAdded,
+                        data: data
+                    };
+                });
+
+                setStudents(students)
+                setStudentFetch(1)
+            })
+
+            return () => {
+                unsub()
+            }
+
+        } catch {
+            setStudentFetch(-1)
+        }
+    }, [])
+
+    useEffect(() => {
+        const query = getAllRecords()
+
+        try {
+            const unsub = onSnapshot(query, snapshot => {
+                if (!snapshot) {
+                    setRecordFetch(-1)
+                    return
+                }
+
+                if (snapshot.empty) {
+                    setRecordFetch(2)
+                    return
+                }
+
+                var records = snapshot.docs.map((doc, index) => {
+                    const data = doc.data()['record'];
+
+                    return {
+                        studentId: data.studentId,
+                        name: data.name,
+                        dateRecord: data.dateRecord,
+                        status: data.status
+                    }
+                });
+
+                records.sort((a, b) => b.dateRecord - a.dateRecord);
+
+                records = records.map((doc, index) => {
+                    var data = doc;
+                    data['no'] = index + 1
+                    return data
+                });
+
+                const group = records.reduce((group, record) => {
+                    const { dateRecord } = record;
+                    group[format(dateRecord.toDate(), 'yyyy/MM/dd')] = group[format(dateRecord.toDate(), 'yyyy/MM/dd')] ?? [];
+                    group[format(dateRecord.toDate(), 'yyyy/MM/dd')].push(record);
+                    return group;
+                }, {});
+
+                setRecords(group)
+                setRecordFetch(1)
+            })
+
+            return () => {
+                unsub()
+            }
+
+        } catch {
+            setRecordFetch(-1)
+        }
+
+    }, [])
+
     const screens = [
-        { header: 'Dashboard / Home', component: <Dashboard /> },
+        {
+            header: 'Dashboard / Home', component:
+                <Dashboard
+                    students={students}
+                    studentFetch={studentFetch}
+                    records={records}
+                    recordFetch={recordFetch}
+                />
+        },
         {
             header: 'Dashboard / Students', component:
                 userType === 1 ?
@@ -36,7 +147,7 @@ function Homepage({ profile, userType }) {
                         setAddStudent={setAddStudent}
                         setShowAlert={setShowAlert}
                         setAlert={setAlert}
-                        setStudents={setStudents}
+                        fetchState={studentFetch}
                         students={students}
                         type={type} /> :
                     <Students1
@@ -44,7 +155,7 @@ function Homepage({ profile, userType }) {
                         setAddStudent={setAddStudent}
                         setShowAlert={setShowAlert}
                         setAlert={setAlert}
-                        setStudents={setStudents}
+                        fetchState={studentFetch}
                         students={students}
                         type={type} />
         },
@@ -54,7 +165,10 @@ function Homepage({ profile, userType }) {
                     students={students}
                     setShowAlert={setShowAlert}
                     setAlert={setAlert}
-                    type={type} />
+                    type={type}
+                    records={records}
+                    fetchState={recordFetch}
+                />
         },
         {
             header: 'Dashboard / Guardians', component:
@@ -67,8 +181,7 @@ function Homepage({ profile, userType }) {
                         setAlert={setAlert}
                         setGuardiansEntry={setGuardiansEntry}
                         type={type} />
-        },
-        { header: 'Dashboard / Settings', component: <Settings /> }
+        }
     ].filter((_, index) => {
         return index !== (userType === 1 ? 4 : 2);
     });
@@ -98,7 +211,7 @@ function Homepage({ profile, userType }) {
             <div className='flex flex-row w-full h-full gap-x-6 overflow-hidden'>
                 <Sidebar userType={userType} screen={screen} setScreen={setScreen} />
                 <div className='w-full h-full flex flex-col gap-5'>
-                    <Navbar userType={userType} setScreen={setScreen} screen={screen} />
+                    <Navbar userType={userType} setScreen={setScreen} screen={screen} screens={screens[screen]} />
                     {screens[screen].component}
                 </div>
             </div>

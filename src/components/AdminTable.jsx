@@ -1,37 +1,35 @@
 import React, { useEffect, useState, useMemo } from 'react'
 import DataTable from "react-data-table-component";
+import { Upcoming, Error } from '@mui/icons-material';
+import { CircularProgress } from '@mui/material';
+import { format } from 'date-fns'
 
-function AdminTable() {
+function AdminTable({ fetchState, records }) {
 
-    const data =
-        [
-            {
-                "no": 1,
-                "id": 2020302020,
-                "name": 'Robby William Oblig',
-                "grade_section": 'Grade 12 - STEM',
-                "date": 'Monday, 2023-11-25',
-                "time": '2:31PM',
-                "status": 0,
+    const StateBuilder = (state) => {
+
+        const states = {
+            "2": {
+                icon: <Upcoming />,
+                text: 'No entries'
             },
-            {
-                "no": 2,
-                "id": 2020302021,
-                "name": 'Jomarie Ysteen Agnes',
-                "grade_section": 'Grade 12 - HUMSS',
-                "date": 'Monday, 2023-11-25',
-                "time": '3:30PM',
-                "status": 0,
-            }, {
-                "no": 3,
-                "id": 2020302022,
-                "name": 'Ryand Sacote',
-                "grade_section": 'Grade 12 - STEM',
-                "date": 'Monday, 2023-11-25',
-                "time": '5:30PM',
-                "status": 0,
+            "-1": {
+                icon: <Error />,
+                text: 'Something went wrong.'
+            },
+            "0": {
+                icon: <CircularProgress className='text-[#49a54d]' color='inherit' />,
+                text: 'Loading entries...'
             }
-        ]
+        }
+
+        return (
+            <div className='flex flex-col h-full justify-center items-center gap-4 text-white'>
+                {states[`${state}`].icon}
+                <p className='text-sm'>{states[`${state}`].text}</p>
+            </div>
+        )
+    }
 
 
     const columns = useMemo(
@@ -43,8 +41,8 @@ function AdminTable() {
             },
             {
                 name: "Student ID",
-                selector: (row) => row.id,
-                width: '130px'
+                selector: (row) => row.studentId,
+                width: '150px'
             },
             {
                 name: "Name",
@@ -52,51 +50,34 @@ function AdminTable() {
                 width: '200px'
             },
             {
-                name: "Grade & Section",
-                selector: (row) => row.grade_section,
-                width: '150px'
-            },
-            {
-                name: "Date",
-                selector: (row) => row.date,
-                width: '180px'
+                name: "Date Record",
+                selector: (row) => format(row.dateRecord.toDate(), 'eeee - MMM dd, yyyy'),
+                width: '220px'
             },
             {
                 name: "Time",
-                selector: (row) => row.time,
-                width: '100px'
+                selector: (row) => format(row.dateRecord.toDate(), 'hh:mm a'),
+                width: '150px'
             },
             {
                 name: "Status",
                 cell: function (row) {
                     return (
-                        <div className="flex bg-[#339655] rounded-sm items-center justify-center w-[100px] h-[24px] cursor-pointer">
-                            <p
-                                className=" px-2 py-1 text-white text-xs"
-                            >
-                                INSIDE
-                            </p>
-                        </div>
+                        row.status == 0 ?
+                            <div className="flex bg-[#339655] rounded-sm items-center justify-center w-[90px] h-[20px] cursor-pointer">
+                                <p className="font-roboto-bold text-white text-xs">
+                                    INSIDE
+                                </p>
+                            </div> :
+                            <div className="flex bg-[#fb0200] rounded-sm items-center justify-center w-[90px] h-[20px] cursor-pointer">
+                                <p className="font-roboto-bold text-white text-xs">
+                                    OUTSIDE
+                                </p>
+                            </div>
                     )
                 },
-                width: '100px'
+                width: '150px'
             },
-            // {
-            //     cell: (row) => (
-            //         <div className="flex items-center w-[100px] h-[25px] cursor-pointer">
-            //             <p
-            //                 className="bg-[#339655] px-2 py-1 rounded-md text-[#ffffff]"
-            //                 onClick={() => handleAction(row)}
-            //             >
-            //                 Check
-            //             </p>
-            //         </div>
-            //     ),
-            //     ignoreRowClick: true,
-            //     allowOverflow: true,
-            //     button: true,
-            // },
-
         ],
         []
     );
@@ -104,37 +85,43 @@ function AdminTable() {
     return (
         <div className='flex-1 h-full border shadow-sm bg-white rounded-xl'>
             <div className='font-roboto text-[#607d8b] flex flex-col p-5 gap-2'>
-                <h1 className='font-roboto-bold text-lg'>Student Record</h1>
-                <DataTable
-                    className="font-roboto rounded-md"
-                    columns={columns}
-                    data={data}
-                    customStyles={
-                        {
-                            rows: {
-                                style: {
-                                    'color': '#607d8b',
-                                    'font-family': 'Roboto',
-                                    'font-size': '14px'
-                                },
-                            },
-                            headCells: {
-                                style: {
-                                    'color': '#607d8b',
-                                    'font-family': 'Roboto',
-                                    'font-size': '14px',
-                                    'font-weight': 'bold'
-                                },
+                <div className='flex flex-row items-center gap-2'>
+                    <h1 className='font-roboto-bold text-lg'>Student Record</h1>
+                    <p className='border border-[#49a54d] py-[1px] text-xs text-[#49a54d] font-roboto-bold px-2 rounded-lg'>Today</p>
+                </div>
+
+                {
+                    fetchState != 1 ? StateBuilder(fetchState) :
+                        <DataTable
+                            className="font-roboto rounded-md"
+                            columns={columns}
+                            data={records[format(new Date(), 'yyyy/MM/dd')]}
+                            customStyles={
+                                {
+                                    rows: {
+                                        style: {
+                                            'color': '#607d8b',
+                                            'font-family': 'Roboto',
+                                            'font-size': '14px'
+                                        },
+                                    },
+                                    headCells: {
+                                        style: {
+                                            'color': '#607d8b',
+                                            'font-family': 'Roboto',
+                                            'font-size': '14px',
+                                            'font-weight': 'bold'
+                                        },
+                                    }
+                                }
                             }
-                        }
-                    }
-                    // progressPending={loading}
-                    fixedHeader
-                    fixedHeaderScrollHeight="330px"
-                    pagination
-                // subHeader
-                // subHeaderComponent={subHeaderComponentMemo}
-                />
+                            persistTableHead
+                            fixedHeader
+                            fixedHeaderScrollHeight="370px"
+                            pagination
+                        />
+                }
+
             </div>
         </div>
     )

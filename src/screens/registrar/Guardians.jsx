@@ -171,6 +171,7 @@ function Guardians({
                             }
                         }
                     }
+                    persistTableHead
                     progressPending={fetchState == 0 ? true : false}
                     progressComponent={<Loader />}
                     noDataComponent={
@@ -179,7 +180,7 @@ function Guardians({
                             message={'The are no guardians on the record.'}
                             cta={'Add Guardian'} />}
                     fixedHeader
-                    fixedHeaderScrollHeight="330px"
+                    fixedHeaderScrollHeight="370px"
                     pagination
                 />
             </div>

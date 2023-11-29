@@ -7,9 +7,8 @@ import { QrCode } from '@mui/icons-material';
 import { Backdrop, CircularProgress } from '@mui/material';
 import QRPreview from '../../components/QRPreview';
 
-function Students({ setStudents, students }) {
+function Students({ students, fetchState }) {
 
-    const [fetchState, setFetchState] = useState(0);
     const [showDialog, setShowDialog] = useState(false);
     const [selectedRow, setSelectedRow] = useState('');
 
@@ -21,49 +20,6 @@ function Students({ setStudents, students }) {
     const handleOpen = () => {
         setOpen(true);
     };
-
-    useEffect(() => {
-        const query = getAllStudents()
-
-        try {
-            const unsub = onSnapshot(query, snapshot => {
-                if (!snapshot) {
-                    setFetchState(-1)
-                    return
-                }
-
-                if (snapshot.empty) {
-                    setFetchState(2)
-                    return
-                }
-
-                const students = snapshot.docs.map((doc, index) => {
-                    const data = doc.data()['student'];
-
-                    return {
-                        no: index + 1,
-                        docId: doc.id,
-                        studentId: data.studentId,
-                        grade_section: data.grade_section,
-                        guardian: data.guardian,
-                        name: data.firstname + " " + data.mi + " " + data.lastname,
-                        dateAdded: data.dateAdded,
-                        data: data
-                    };
-                });
-
-                setStudents(students)
-                setFetchState(1)
-            })
-
-            return () => {
-                unsub()
-            }
-
-        } catch {
-            setFetchState(-1)
-        }
-    }, [])
 
     const columns = useMemo(
         () => [
@@ -150,10 +106,11 @@ function Students({ setStudents, students }) {
                             }
                         }
                     }
+                    persistTableHead
                     progressPending={fetchState == 0 ? true : false}
                     progressComponent={<Loader />}
                     fixedHeader
-                    fixedHeaderScrollHeight="330px"
+                    fixedHeaderScrollHeight="370px"
                     pagination
                 />
                 <Backdrop

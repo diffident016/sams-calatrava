@@ -18,8 +18,8 @@ function Sidebar({ userType, setScreen, screen }) {
         { icon: <Home color='inherit' />, label: 'Dashboard' },
         { icon: <Person />, label: 'Students' },
         { icon: <Groups />, label: 'Check Attendance' },
-        { icon: <SupervisorAccount />, label: 'Guardians' },
-        { icon: <Settings />, label: 'Settings' },
+        { icon: <SupervisorAccount />, label: 'Guardians' }
+
     ].filter((_, index) => {
         return index !== (userType === 1 ? 4 : 2);
     });
