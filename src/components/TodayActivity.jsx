@@ -40,26 +40,29 @@ function TodayActivity({ recordFetch, records }) {
                             {
                                 <div className='p-2 h-full overflow-y-auto'>
                                     {
-
-                                        records[format(new Date(), 'yyyy/MM/dd')].map((record, i) => {
-                                            return (
-                                                <div className='flex flex-row w-full h-12 items-center gap-x-4'>
-                                                    <div className='flex flex-col items-center text-[#49a54d] text-sm h-full'>
-                                                        {i == 0 ?
-                                                            <CircleOutlined className='animate-pulse' color='inherit' fontSize='inherit' />
-                                                            : <CircleOutlined color='inherit' fontSize='inherit' />}
-                                                        {i != (records[format(new Date(), 'yyyy/MM/dd')].length) - 1 && <div className='my-[2px] w-[2px] h-full bg-[#49a54d]/50'></div>}
+                                        !records[format(new Date(), 'yyyy/MM/dd')] ?
+                                            (<div className='h-full flex items-center justify-center'>
+                                                <p className='text-sm'>No activities yet.</p>
+                                            </div>) :
+                                            records[format(new Date(), 'yyyy/MM/dd')].map((record, i) => {
+                                                return (
+                                                    <div className='flex flex-row w-full h-12 items-center gap-x-4'>
+                                                        <div className='flex flex-col items-center text-[#49a54d] text-sm h-full'>
+                                                            {i == 0 ?
+                                                                <CircleOutlined className='animate-pulse' color='inherit' fontSize='inherit' />
+                                                                : <CircleOutlined color='inherit' fontSize='inherit' />}
+                                                            {i != (records[format(new Date(), 'yyyy/MM/dd')].length) - 1 && <div className='my-[2px] w-[2px] h-full bg-[#49a54d]/50'></div>}
+                                                        </div>
+                                                        <div className='flex flex-col h-full mt-[-6px]'>
+                                                            <h1 className='font-roboto-bold text-sm'>{record.name}</h1>
+                                                            <label className='flex items-center text-xs gap-1'>
+                                                                <AccessTime fontSize='inherit' />
+                                                                <span> {format(record.dateRecord.toDate(), 'hh:mm a')}</span>
+                                                            </label>
+                                                        </div>
                                                     </div>
-                                                    <div className='flex flex-col h-full mt-[-6px]'>
-                                                        <h1 className='font-roboto-bold text-sm'>{record.name}</h1>
-                                                        <label className='flex items-center text-xs gap-1'>
-                                                            <AccessTime fontSize='inherit' />
-                                                            <span> {format(record.dateRecord.toDate(), 'hh:mm a')}</span>
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                            )
-                                        })
+                                                )
+                                            })
                                     }
                                 </div>
                             }
