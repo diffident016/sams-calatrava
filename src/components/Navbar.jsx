@@ -5,7 +5,7 @@ import {
     PersonAdd
 } from '@mui/icons-material';
 
-function Navbar({ userType, screen, screens }) {
+function Navbar({ userType, screen, screens, setScreen }) {
     return (
         <div className='w-full h-20 border bg-white rounded-xl shadow-sm'>
             <div className='relative flex flex-row w-full h-full items-center text-[#607d8b]'>
@@ -13,7 +13,7 @@ function Navbar({ userType, screen, screens }) {
                     <h1 className='text-sm '>{screens.header}</h1>
                     <h1 className='text-md font-bold'>{screens.header.split(' / ')[1]}</h1>
                 </div>
-                {screen < 1 && <div className='flex-1 flex flex-row text-[#607d8b] gap-2 items-center mx-4 cursor-pointer'>
+                {screen < 1 && <div onClick={() => { setScreen(userType === 1 ? 2 : 1) }} className='flex-1 flex flex-row text-[#607d8b] gap-2 items-center mx-4 cursor-pointer'>
                     {userType === 1 ? <QrCodeRounded color='inherit' /> : <PersonAdd color='inherit' />}
                     <h1 className='text-sm font-roboto-bold'>{userType === 1 ? 'Scan QR Code' : 'Add Student'}</h1>
                 </div>}
