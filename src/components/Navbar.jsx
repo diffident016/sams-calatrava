@@ -2,7 +2,6 @@ import React from 'react'
 import {
     QrCodeRounded,
     AccountCircle,
-    Notifications,
     PersonAdd
 } from '@mui/icons-material';
 

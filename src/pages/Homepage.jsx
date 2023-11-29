@@ -7,12 +7,11 @@ import { Students as Students2 } from '../screens/admin/Students';
 import CheckAttendance from './CheckAttendance';
 import { Guardians as Guardians1 } from '../screens/registrar/Guardians';
 import { Guardians as Guardians2 } from '../screens/admin/Guardians';
-import Settings from './Settings';
 import AddStudent from '../components/AddStudent';
 import UserAlert from '../components/UserAlert';
 import { Alert } from '../models/Alert';
 import AddGuardian from '../components/AddGuardian';
-import { getAllRecords, getAllStudents, onSnapshot, Timestamp } from '../api/Service';
+import { getAllRecords, getAllStudents, onSnapshot, getAllGuardians } from '../api/Service';
 import { format } from 'date-fns'
 
 function Homepage({ profile, userType }) {
@@ -24,12 +23,60 @@ function Homepage({ profile, userType }) {
     const [editStudent, setEditStudent] = useState(null)
     const [editGuardian, setEditGuardian] = useState(null)
     const [addGuardian, setAddGuarian] = useState(false)
-    const [guardiansEntry, setGuardiansEntry] = useState([])
+    const [guardians, setGuardians] = useState([])
     const [records, setRecords] = useState([])
     const [recordFetch, setRecordFetch] = useState(0)
     const [studentFetch, setStudentFetch] = useState(0)
+    const [guardianFetch, setGuardianFetch] = useState(0)
+    const [guardiansEntry, setGuardiansEntry] = useState(0)
 
     const { alert, setAlert, type } = Alert();
+
+    useEffect(() => {
+        const query = getAllGuardians()
+
+        try {
+            const unsub = onSnapshot(query, snapshot => {
+                if (!snapshot) {
+                    setGuardianFetch(-1)
+                    return
+                }
+
+                if (snapshot.empty) {
+                    setGuardianFetch(2)
+                    return
+                }
+
+                const guardians = snapshot.docs.map((doc, index) => {
+                    const data = doc.data()['guardian'];
+
+                    return {
+                        no: index + 1,
+                        docId: doc.id,
+                        name: data.firstname + " " + data.mi + " " + data.lastname,
+                        phone: data.phone,
+                        dateAdded: data.dateAdded,
+                        data: data
+                    };
+                });
+
+                const guardiansEntry = guardians.map((g) => {
+                    return g.name
+                })
+
+                setGuardiansEntry(guardiansEntry)
+                setGuardians(guardians)
+                setGuardianFetch(1)
+            })
+
+            return () => {
+                unsub()
+            }
+
+        } catch {
+            setGuardianFetch(-1)
+        }
+    }, [])
 
     useEffect(() => {
         const query = getAllStudents()
@@ -173,13 +220,17 @@ function Homepage({ profile, userType }) {
         {
             header: 'Dashboard / Guardians', component:
                 userType === 1 ?
-                    <Guardians2 /> :
+                    <Guardians2
+                        fetchState={guardianFetch}
+                        guardians={guardians}
+                    /> :
                     <Guardians1
                         setEditGuardian={setEditGuardian}
                         setAddGuardian={setAddGuarian}
                         setShowAlert={setShowAlert}
                         setAlert={setAlert}
-                        setGuardiansEntry={setGuardiansEntry}
+                        fetchState={guardianFetch}
+                        guardians={guardians}
                         type={type} />
         }
     ].filter((_, index) => {

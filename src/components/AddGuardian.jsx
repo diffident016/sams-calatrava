@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { PersonAdd, Close } from '@mui/icons-material'
-import { Autocomplete, TextField } from '@mui/material'
 import ShowDialog from './ShowDialog'
 import { Guardian } from '../models/Guardian'
 import { addGuardian, editGuardianInfo } from '../api/Service'
-import { Alert } from '../models/Alert'
 
 function AddGuardian({ show, close, setAlert, setShowAlert, type, editGuardian, setEditGuardian }) {
 

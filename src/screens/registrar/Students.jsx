@@ -1,8 +1,7 @@
-import React, { useEffect, useState, useMemo } from 'react'
+import React, { useState, useMemo } from 'react'
 import DataTable from "react-data-table-component";
 import EmptyTable from '../../components/EmptyTable';
-import { studentTable } from '../../models/TableColumns';
-import { deleteStudent, getAllStudents, onSnapshot, Timestamp } from '../../api/Service';
+import { deleteStudent } from '../../api/Service';
 import { PersonAdd, Edit, Delete } from '@mui/icons-material';
 import { format } from 'date-fns'
 import Loader from '../../components/Loader'

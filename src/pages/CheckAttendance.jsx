@@ -2,14 +2,14 @@ import React, { useState, useEffect, useMemo } from 'react'
 import DataTable from "react-data-table-component";
 import { QrScanner } from '@yudiel/react-qr-scanner';
 import { format, differenceInMinutes } from 'date-fns'
-import { addRecord, getAllRecords, Timestamp, onSnapshot } from '../api/Service';
+import { addRecord, Timestamp } from '../api/Service';
 import { DateCalendar } from '@mui/x-date-pickers';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import { KeyboardArrowDown } from '@mui/icons-material';
 
-function CheckAttendance({ students = [], setAlert, setShowAlert, type, records, fetchState }) {
+function CheckAttendance({ students = [], records, fetchState }) {
 
     const [delay, setDelay] = useState(false)
     const [videoSelect, setVideoSelect] = useState([])

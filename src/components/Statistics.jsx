@@ -1,12 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { Upcoming, Error } from '@mui/icons-material';
 import { CircularProgress, LinearProgress } from '@mui/material';
 import { format, isToday, isYesterday, parse } from 'date-fns'
 
 function Statistics({ students, records, studentFetch, recordFetch }) {
-
-    const [recordCount, setRecordCount] = useState(0);
-
 
     const StateBuilder = (state) => {
 

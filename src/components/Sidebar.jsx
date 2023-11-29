@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import logo from '../assets/images/logo.png'
 import { useAuth } from "../auth/AuthContext";
 import {
@@ -6,7 +6,6 @@ import {
     Person,
     Groups,
     SupervisorAccount,
-    Settings,
     Logout
 } from '@mui/icons-material';
 
@@ -19,7 +18,6 @@ function Sidebar({ userType, setScreen, screen }) {
         { icon: <Person />, label: 'Students' },
         { icon: <Groups />, label: 'Check Attendance' },
         { icon: <SupervisorAccount />, label: 'Guardians' }
-
     ].filter((_, index) => {
         return index !== (userType === 1 ? 4 : 2);
     });

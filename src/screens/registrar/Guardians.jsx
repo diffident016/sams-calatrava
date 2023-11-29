@@ -1,71 +1,24 @@
-import React, { useEffect, useState, useMemo } from 'react'
+import React, { useState, useMemo } from 'react'
 import DataTable from "react-data-table-component";
 import EmptyTable from '../../components/EmptyTable';
-import { deleteGuardian, getAllGuardians, onSnapshot, Timestamp } from '../../api/Service';
+import { deleteGuardian } from '../../api/Service';
 import { PersonAdd, Edit, Delete } from '@mui/icons-material';
 import { format } from 'date-fns'
 import Loader from '../../components/Loader'
 import ShowDialog from '../../components/ShowDialog';
 
 function Guardians({
-    addGuardian,
     setAddGuardian,
     setEditGuardian,
     setAlert,
     setShowAlert,
     type,
-    setGuardiansEntry }) {
+    guardians,
+    fetchState
+}) {
 
-    const [guardians, setGuardians] = useState([]);
-    const [fetchState, setFetchState] = useState(0);
     const [showDialog, setShowDialog] = useState(false);
     const [selectedRow, setSelectedRow] = useState('');
-
-    useEffect(() => {
-        const query = getAllGuardians()
-
-        try {
-            const unsub = onSnapshot(query, snapshot => {
-                if (!snapshot) {
-                    setFetchState(-1)
-                    return
-                }
-
-                if (snapshot.empty) {
-                    setFetchState(2)
-                    return
-                }
-
-                const guardians = snapshot.docs.map((doc, index) => {
-                    const data = doc.data()['guardian'];
-
-                    return {
-                        no: index + 1,
-                        docId: doc.id,
-                        name: data.firstname + " " + data.mi + " " + data.lastname,
-                        phone: data.phone,
-                        dateAdded: data.dateAdded,
-                        data: data
-                    };
-                });
-
-                const guardiansEntry = guardians.map((g) => {
-                    return g.name
-                })
-
-                setGuardiansEntry(guardiansEntry)
-                setGuardians(guardians)
-                setFetchState(1)
-            })
-
-            return () => {
-                unsub()
-            }
-
-        } catch {
-            setFetchState(-1)
-        }
-    }, [])
 
     const handleDelete = async (docId) => {
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import Today from '../components/Today'
 import Statistics from '../components/Statistics'
 import TodayActivity from '../components/TodayActivity'

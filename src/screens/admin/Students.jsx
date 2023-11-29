@@ -1,17 +1,14 @@
-import React, { useEffect, useState, useMemo } from 'react'
+import React, { useState, useMemo } from 'react'
 import DataTable from "react-data-table-component";
-import { getAllStudents, onSnapshot } from '../../api/Service';
 import { format } from 'date-fns'
 import Loader from '../../components/Loader'
 import { QrCode } from '@mui/icons-material';
-import { Backdrop, CircularProgress } from '@mui/material';
+import { Backdrop } from '@mui/material';
 import QRPreview from '../../components/QRPreview';
 
 function Students({ students, fetchState }) {
 
-    const [showDialog, setShowDialog] = useState(false);
     const [selectedRow, setSelectedRow] = useState('');
-
     const [open, setOpen] = useState(false);
 
     const handleClose = () => {

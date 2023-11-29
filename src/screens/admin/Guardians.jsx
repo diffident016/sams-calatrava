@@ -1,54 +1,9 @@
-import React, { useEffect, useState, useMemo } from 'react'
+import React, { useMemo } from 'react'
 import DataTable from "react-data-table-component";
-import { getAllGuardians, onSnapshot } from '../../api/Service';
 import { format } from 'date-fns'
 import Loader from '../../components/Loader'
 
-function Guardians() {
-
-    const [guardians, setGuardians] = useState([]);
-    const [fetchState, setFetchState] = useState(0);
-
-    useEffect(() => {
-        const query = getAllGuardians()
-
-        try {
-            const unsub = onSnapshot(query, snapshot => {
-                if (!snapshot) {
-                    setFetchState(-1)
-                    return
-                }
-
-                if (snapshot.empty) {
-                    setFetchState(2)
-                    return
-                }
-
-                const guardians = snapshot.docs.map((doc, index) => {
-                    const data = doc.data()['guardian'];
-
-                    return {
-                        no: index + 1,
-                        docId: doc.id,
-                        name: data.firstname + " " + data.mi + " " + data.lastname,
-                        phone: data.phone,
-                        dateAdded: data.dateAdded,
-                        data: data
-                    };
-                });
-
-                setGuardians(guardians)
-                setFetchState(1)
-            })
-
-            return () => {
-                unsub()
-            }
-
-        } catch {
-            setFetchState(-1)
-        }
-    }, [])
+function Guardians({ guardians, fetchState }) {
 
     const columns = useMemo(
         () => [
