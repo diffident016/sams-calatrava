@@ -34,7 +34,7 @@ function Guardians({ guardians, fetchState }) {
         <div className='w-full h-full bg-white border shadow-sm rounded-lg py-2 px-4'>
             <div className='font-roboto text-[#607d8b] flex flex-col p-4 gap-2 w-full'>
                 <div className='flex flex-row justify-between py-2'>
-                    <h1 className='font-roboto-bold text-lg'>Guardian Records</h1>
+                    <h1 className='font-roboto-bold text-lg'>Guardian's Notification</h1>
                 </div>
                 <DataTable
                     className="font-roboto rounded-md"
@@ -64,7 +64,6 @@ function Guardians({ guardians, fetchState }) {
                     progressComponent={<Loader />}
                     fixedHeader
                     fixedHeaderScrollHeight="370px"
-                    pagination
                 />
             </div>
         </div>

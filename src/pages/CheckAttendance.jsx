@@ -265,7 +265,7 @@ function CheckAttendance({ students = [], records, fetchState }) {
                                 }
                                 persistTableHead
                                 fixedHeader
-                                fixedHeaderScrollHeight="300px"
+                                fixedHeaderScrollHeight="310px"
                                 pagination
                             />
                     }

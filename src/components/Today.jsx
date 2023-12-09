@@ -15,7 +15,7 @@ function Today() {
         return () => {
             clearInterval(timer)
         }
-    }, []);
+    }, [ctime]);
 
     return (
         <div className='font-roboto flex-1 h-80 border text-[#607d8b] shadow-sm bg-white rounded-xl'>
