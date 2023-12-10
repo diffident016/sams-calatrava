@@ -11,6 +11,7 @@ export function Guardian() {
             firstname: '',
             mi: '',
             phone: '',
+            address: '',
             dateAdded: ''
         });
 

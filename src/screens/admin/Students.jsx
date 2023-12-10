@@ -107,6 +107,7 @@ function Students({ students, fetchState }) {
                     progressPending={fetchState == 0 ? true : false}
                     progressComponent={<Loader />}
                     fixedHeader
+                    fixedHeaderScrollHeight="370px"
                 />
                 <Backdrop
                     sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}

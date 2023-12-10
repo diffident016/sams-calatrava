@@ -51,12 +51,17 @@ function Guardians({
             {
                 name: "Name",
                 selector: (row) => row.name,
-                width: '250px'
+                width: '200px'
             },
             {
                 name: "Phone Number",
                 selector: (row) => row.phone,
-                width: '250px'
+                width: '160px'
+            },
+            {
+                name: "Address",
+                selector: (row) => row.address,
+                width: '230px'
             },
             {
                 name: "Date Added",
@@ -86,7 +91,7 @@ function Guardians({
                         </div>
                     )
                 },
-                width: '150px'
+                width: '100px'
             },
         ]
     );

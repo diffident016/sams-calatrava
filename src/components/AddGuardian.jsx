@@ -19,6 +19,7 @@ function AddGuardian({ show, close, setAlert, setShowAlert, type, editGuardian, 
             mi: editGuardian.mi,
             lastname: editGuardian.lastname,
             phone: editGuardian.phone,
+            address: editGuardian.address,
             dateAdded: editGuardian.dateAdded,
         })
     }, [editGuardian])
@@ -67,6 +68,7 @@ function AddGuardian({ show, close, setAlert, setShowAlert, type, editGuardian, 
             firstname: '',
             mi: '',
             lastname: '',
+            address: '',
             phone: '',
         })
 
@@ -79,7 +81,7 @@ function AddGuardian({ show, close, setAlert, setShowAlert, type, editGuardian, 
         <>
             {show && (<div className='z-20 absolute h-full w-full bg-[#f5f7f8]/80'>
                 <div className='w-full h-full flex items-center justify-center'>
-                    <div className='flex flex-col p-6 w-[450px] h-[450px] bg-white border shadow-sm rounded-lg text-[#607d8b] font-roboto'>
+                    <div className='flex flex-col p-6 w-[450px] h-[500px] bg-white border shadow-sm rounded-lg text-[#607d8b] font-roboto'>
                         <div className='flex flex-row justify-between'>
                             <PersonAdd color='inherit' />
                             <Close onClick={() => {
@@ -135,7 +137,17 @@ function AddGuardian({ show, close, setAlert, setShowAlert, type, editGuardian, 
                                     type='text'
                                     className='w-full text-sm h-9 border border-[#cecece]  rounded-md focus:outline-none px-2' />
                             </div>
-
+                            <div className='flex-1'>
+                                <label className='py-1 text-xs font-roboto-bold'>Address <span className='text-[#dc2626]'>*</span></label>
+                                <input
+                                    required
+                                    value={guardian.address}
+                                    onChange={(e) => {
+                                        updateGuardian({ address: e.target.value })
+                                    }}
+                                    type='text'
+                                    className='w-full text-sm h-9 border border-[#cecece]  rounded-md focus:outline-none px-2' />
+                            </div>
                             <div className='flex flex-row w-full py-6 justify-end text-white text-sm font-roboto-bold gap-2'>
                                 <button type='submit' className='w-20 h-8 bg-[#49a54d] rounded-md'>{!update ? 'Add' : 'Update'}</button>
                                 <button onClick={() => {

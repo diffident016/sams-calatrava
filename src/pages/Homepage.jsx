@@ -55,6 +55,7 @@ function Homepage({ profile, userType }) {
                         docId: doc.id,
                         name: data.firstname + " " + data.mi + " " + data.lastname,
                         phone: data.phone,
+                        address: data.address,
                         dateAdded: data.dateAdded,
                         data: data
                     };
@@ -76,7 +77,7 @@ function Homepage({ profile, userType }) {
         } catch {
             setGuardianFetch(-1)
         }
-    }, [guardians, guardiansEntry, guardianFetch])
+    }, [])
 
     useEffect(() => {
         const query = getAllStudents()
@@ -119,7 +120,7 @@ function Homepage({ profile, userType }) {
         } catch {
             setStudentFetch(-1)
         }
-    }, [students, studentFetch])
+    }, [])
 
     useEffect(() => {
         const query = getAllRecords()
@@ -174,7 +175,7 @@ function Homepage({ profile, userType }) {
             setRecordFetch(-1)
         }
 
-    }, [records, recordFetch])
+    }, [])
 
     const screens = [
         {
