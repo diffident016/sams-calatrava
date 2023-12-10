@@ -3,6 +3,7 @@ import DataTable from "react-data-table-component";
 import { format } from 'date-fns'
 import Loader from '../../components/Loader'
 import { KeyboardArrowDown } from '@mui/icons-material';
+import { getMessage } from '../../api/SMSService';
 
 function Guardians({ guardians, fetchState }) {
 
@@ -49,7 +50,9 @@ function Guardians({ guardians, fetchState }) {
                 name: "SMS Status",
                 cell: function (row) {
                     return (
-                        <p className='border border-[#49a54d] py-[1px] text-xs text-[#49a54d] font-roboto-bold px-2 rounded-lg'>SENT</p>
+                        <p onClick={() => {
+                            getMessage()
+                        }} className='border border-[#49a54d] py-[1px] text-xs text-[#49a54d] font-roboto-bold px-2 rounded-lg'>SENT</p>
                     )
                 },
                 width: '150px'
