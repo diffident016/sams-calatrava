@@ -12,6 +12,7 @@ export function Student() {
             mi: '',
             grade_section: '',
             qr_data: null,
+            guardian_name: '',
             guardian: '',
             dateAdded: ''
         });

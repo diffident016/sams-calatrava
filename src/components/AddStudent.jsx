@@ -29,6 +29,7 @@ function AddStudent({
             mi: editStudent.mi,
             lastname: editStudent.lastname,
             grade_section: editStudent.grade_section,
+            guardian_name: editStudent.guardian_name || '',
             guardian: editStudent.guardian,
             dateAdded: editStudent.dateAdded,
             studentId: editStudent.studentId,
@@ -81,7 +82,8 @@ function AddStudent({
             mi: '',
             lastname: '',
             grade_section: '',
-            guardian: null
+            guardian: null,
+            guardian_name: ''
         })
 
         setEditStudent(null)
@@ -160,15 +162,24 @@ function AddStudent({
                                 <Autocomplete
                                     id="guardian-box"
                                     className='text-white'
-                                    options={guardiansEntry}
+                                    options={guardiansEntry || []}
                                     sx={{ width: '100%', height: '36px' }}
                                     size='small'
-                                    value={student.guardian}
-                                    inputValue={student.guardian}
-                                    onInputChange={(event, newInputValue) => {
-                                        updateStudent({ guardian: newInputValue })
+                                    value={student.guardian_name}
+                                    inputValue={student.guardian_name}
+                                    onChange={(event, newValue) => {
+                                        updateStudent({
+                                            guardian_name: newValue.name,
+                                            guardian: newValue
+                                        })
                                     }}
-                                    renderInput={(params) => <TextField {...params} />}
+                                    // onInputChange={(event, newInputValue) => {
+                                    //     console.log(guardiansEntry.find(x => x.name === newInputValue))
+                                    //     updateStudent({ guardian: newInputValue })
+                                    // }}
+                                    renderInput={(params) => {
+                                        return <TextField {...params} />
+                                    }}
                                 />
                             </div>
                             <div className='flex flex-row w-full py-6 justify-end text-white text-sm font-roboto-bold gap-2'>

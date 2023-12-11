@@ -48,7 +48,7 @@ function Students({ students, fetchState, setAddStudent, setEditStudent, setAler
             {
                 name: "Name",
                 selector: (row) => row.name,
-                width: '200px'
+                width: '180px'
             },
             {
                 name: "Grade & Section",
@@ -57,7 +57,7 @@ function Students({ students, fetchState, setAddStudent, setEditStudent, setAler
             },
             {
                 name: "Guardian",
-                selector: (row) => (!row.guardian || row.guardian == "") ? 'Not specified' : row.guardian,
+                selector: (row) => (!row.guardian || row.guardian == "") ? 'Not specified' : row.guardian.name,
                 width: '180px'
             },
             {
@@ -69,14 +69,11 @@ function Students({ students, fetchState, setAddStudent, setEditStudent, setAler
                 name: "Actions",
                 cell: function (row) {
 
-                    let data = row.data
-                    data['docId'] = row.docId
-
                     return (
                         <div className="flex flex-row w-[100px] h-full items-center text-[20px] gap-2">
                             <Edit
                                 onClick={() => {
-                                    setEditStudent(data)
+                                    setEditStudent(row)
                                     setAddStudent(true)
                                 }}
                                 className="cursor-pointer" fontSize="inherit" />
@@ -131,9 +128,9 @@ function Students({ students, fetchState, setAddStudent, setEditStudent, setAler
                     progressComponent={<Loader />}
                     noDataComponent={
                         <EmptyTable
-                            setEntry={setAddStudent}
-                            message={'The are no students on the record.'}
-                            cta={'Add'} />}
+                            addEntry={setAddStudent}
+                            message={'There are no students on the record.'}
+                            cta={'Add Student'} />}
                     fixedHeader
                     fixedHeaderScrollHeight="370px"
                     pagination

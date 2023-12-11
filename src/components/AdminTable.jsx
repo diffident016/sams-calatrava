@@ -11,7 +11,7 @@ function AdminTable({ fetchState, records }) {
         const states = {
             "2": {
                 icon: <Upcoming />,
-                text: 'No entries'
+                text: 'No records'
             },
             "-1": {
                 icon: <Error />,
@@ -24,8 +24,7 @@ function AdminTable({ fetchState, records }) {
         }
 
         return (
-            <div className='flex flex-col h-full justify-center items-center gap-4 text-white'>
-                {states[`${state}`].icon}
+            <div className='flex flex-col h-full justify-center items-center gap-4 text-[#607d8b]'>
                 <p className='text-sm'>{states[`${state}`].text}</p>
             </div>
         )
@@ -41,12 +40,12 @@ function AdminTable({ fetchState, records }) {
             },
             {
                 name: "Student ID",
-                selector: (row) => row.studentId,
+                selector: (row) => row.student.studentId,
                 width: '150px'
             },
             {
                 name: "Name",
-                selector: (row) => row.name,
+                selector: (row) => row.student.name,
                 width: '200px'
             },
             {

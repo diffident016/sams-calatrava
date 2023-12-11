@@ -8,8 +8,9 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import { KeyboardArrowDown } from '@mui/icons-material';
+import { sendSMS } from '../api/SMSService';
 
-function CheckAttendance({ students = [], records, fetchState }) {
+function CheckAttendance({ students = [], records, fetchState, setAlert, type, setShowAlert, sms }) {
 
     const [delay, setDelay] = useState(false)
     const [videoSelect, setVideoSelect] = useState([])
@@ -50,7 +51,7 @@ function CheckAttendance({ students = [], records, fetchState }) {
         if (!temp) return 0
 
         const r = temp.filter((record) => {
-            return record.studentId == id
+            return record.student.studentId == id
         })
 
         r.sort((a, b) => b.dateRecord - a.dateRecord);
@@ -85,18 +86,35 @@ function CheckAttendance({ students = [], records, fetchState }) {
         if (st == -2) return setScanned(status[3])
 
         const record = {
-            studentId: student.studentId,
-            name: student.name,
-            grade_section: student.grade_section,
+            student: student,
             dateRecord: dateRecord,
             status: st
         }
 
         try {
-            await addRecord(record)
+
+            record['sms'] = sms;
+            await addRecord(record);
+
+            setAlert({
+                type: type.SUCCESS,
+                message: 'Attendance has been recorded successfully.',
+                duration: 3000
+            })
+            setShowAlert(true)
+
+            if (!sms) return
+            await sendSMS(record);
 
         } catch (e) {
             console.log(e)
+
+            setAlert({
+                type: type.FAIL,
+                message: 'Failed to record attendance.',
+                duration: 3000
+            })
+            setShowAlert(true)
         }
     }
 
@@ -144,12 +162,12 @@ function CheckAttendance({ students = [], records, fetchState }) {
         () => [
             {
                 name: "Student ID",
-                selector: (row) => row.studentId,
+                selector: (row) => row.student.studentId,
                 width: '100px'
             },
             {
                 name: "Name",
-                selector: (row) => row.name,
+                selector: (row) => row.student.name,
                 width: '200px'
             },
             {

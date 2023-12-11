@@ -130,5 +130,6 @@ export {
     onSnapshot,
     Timestamp,
     addRecord,
-    getAllRecords
+    getAllRecords,
+    orderBy
 }

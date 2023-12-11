@@ -42,7 +42,7 @@ function Students({ students, fetchState }) {
             },
             {
                 name: "Guardian",
-                selector: (row) => (!row.guardian || row.guardian == "") ? 'Not specified' : row.guardian,
+                selector: (row) => (!row.guardian || row.guardian == "") ? 'Not specified' : row.guardian.name,
                 width: '160px'
             },
             {
@@ -53,14 +53,10 @@ function Students({ students, fetchState }) {
             {
                 name: "Actions",
                 cell: function (row) {
-
-                    let data = row.data
-                    data['docId'] = row.docId
-
                     return (
                         <div
                             onClick={() => {
-                                setSelectedRow(data.studentId)
+                                setSelectedRow(row.studentId)
                                 handleOpen()
                             }}
                             className="flex cursor-pointer flex-row w-[100px] h-full items-center text-[20px] gap-2">

@@ -10,7 +10,7 @@ function Statistics({ students, records, studentFetch, recordFetch }) {
         const states = {
             "2": {
                 icon: <Upcoming />,
-                text: 'No entries'
+                text: 'No statistics'
             },
             "-1": {
                 icon: <Error />,
@@ -18,13 +18,13 @@ function Statistics({ students, records, studentFetch, recordFetch }) {
             },
             "0": {
                 icon: <CircularProgress className='text-[#49a54d]' color='inherit' />,
-                text: 'Loading entries...'
+                text: 'Loading statistics...'
             }
         }
 
         return (
-            <div className='flex flex-col h-full justify-center items-center gap-4 text-white'>
-                {states[`${state}`].icon}
+            <div className='flex flex-col h-full justify-center items-center gap-4 text-[#607d8b]'>
+                {/* {states[`${state}`].icon} */}
                 <p className='text-sm'>{states[`${state}`].text}</p>
             </div>
         )
@@ -45,7 +45,7 @@ function Statistics({ students, records, studentFetch, recordFetch }) {
         <div className='flex-1 h-80 border shadow-sm bg-white rounded-xl'>
             <div className='font-roboto text-[#607d8b] flex flex-col p-5 h-full'>
                 <h1 className='font-roboto-bold text-lg'>Statistics</h1>
-                <div className='flex flex-col gap-2 overflow-auto py-2'>
+                <div className='flex flex-col gap-2 overflow-auto py-2 h-full'>
                     {
                         (studentFetch != 1 && recordFetch != 0) ? StateBuilder(recordFetch) :
                             <>

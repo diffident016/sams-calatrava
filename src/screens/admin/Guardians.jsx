@@ -1,64 +1,28 @@
-import React, { useMemo, useState } from 'react'
+import React, { useMemo, useState, useEffect } from 'react'
 import DataTable from "react-data-table-component";
-import { format } from 'date-fns'
+import { format, formatDistance } from 'date-fns'
 import Loader from '../../components/Loader'
-import { KeyboardArrowDown } from '@mui/icons-material';
-import { getMessage } from '../../api/SMSService';
+import { KeyboardArrowDown, Upcoming, Campaign, CampaignOutlined } from '@mui/icons-material';
+import { getMessage, getAccount } from '../../api/SMSService';
+import { CircularProgress, Switch } from '@mui/material';
 
-function Guardians({ guardians, fetchState }) {
+function Guardians({ guardians, fetchState, records, recordFetch, sms, setSms }) {
 
     const [query, setQuery] = useState('')
     const [searchItems, setSearchItems] = useState([])
+    const [credits, setCredits] = useState(0)
+    const [date, setDate] = useState(new Date())
 
-    const columns = useMemo(
-        () => [
-            {
-                name: "Name",
-                selector: (row) => row.name,
-                width: '220px'
-            },
-            {
-                name: "Phone Number",
-                selector: (row) => row.phone,
-                width: '180px'
-            },
-            {
-                name: "Date/Time",
-                selector: (row) => format(row.dateAdded.toDate(), 'LL/dd/yyyy - hh:mm a'),
-                width: '200px'
-            },
-            {
-                name: "SMS Type",
-                cell: function (row) {
-                    return (
-                        false ?
-                            <div className="flex bg-[#339655] rounded-sm items-center justify-center w-[60px] h-[20px] cursor-pointer">
-                                <p className="font-roboto-bold text-white text-xs">
-                                    INSIDE
-                                </p>
-                            </div> :
-                            <div className="flex bg-[#fb0200] rounded-sm items-center justify-center w-[60px] h-[20px] cursor-pointer">
-                                <p className="font-roboto-bold text-white text-xs">
-                                    OUTSIDE
-                                </p>
-                            </div>
-                    )
-                },
-                width: '150px'
-            },
-            {
-                name: "SMS Status",
-                cell: function (row) {
-                    return (
-                        <p onClick={() => {
-                            getMessage()
-                        }} className='border border-[#49a54d] py-[1px] text-xs text-[#49a54d] font-roboto-bold px-2 rounded-lg'>SENT</p>
-                    )
-                },
-                width: '150px'
+    useEffect(() => {
+        getAccount().then((res) => {
+            return res.json()
+        }).then((res) => {
+            if (res.credit_balance) {
+                setCredits(res.credit_balance)
             }
-        ]
-    );
+        })
+            .catch(err => console.error(err));
+    }, [])
 
     const search = (query) => {
 
@@ -73,57 +37,101 @@ function Guardians({ guardians, fetchState }) {
         return newRecords;
     }
 
+    const StateBuilder = (state) => {
+
+        const states = {
+            "2": {
+                icon: <Upcoming />,
+                text: 'No entries'
+            },
+            "-1": {
+                icon: <Error />,
+                text: 'Something went wrong.'
+            },
+            "0": {
+                icon: <CircularProgress className='text-[#49a54d]' color='inherit' />,
+                text: 'Loading, please wait...'
+            }
+        }
+
+        return (
+            <div className='flex flex-col h-full justify-center items-center gap-4 text-[#607d8b]'>
+                {states[`${state}`].icon}
+                <p className='text-sm'>{states[`${state}`].text}</p>
+            </div>
+        )
+    }
+
+    const messageConstructor = (report) => {
+
+        const status = {
+            "0": "ENTER",
+            "1": "EXIT"
+        }
+
+        return <p className='py-3 text-sm'>
+            A SMS message was sent to Mrs./Mr. <span className='font-roboto-bold'>{report.student.guardian.name} </span>
+            to give information about her/his child <span className='font-roboto-bold'>{report.student.name}, {status[report.status]} </span>
+            the school on <span className='font-roboto-bold'>{format(report.dateRecord.toDate(), 'EEEE, MMMM dd, yyyy')} at
+                {format(report.dateRecord.toDate(), ' hh:mm a')}</span>.
+        </p>
+    }
+
     return (
-        <div className='w-full h-full bg-white border shadow-sm rounded-lg py-2 px-4'>
-            <div className='font-roboto text-[#607d8b] flex flex-col p-4 gap-2 w-full'>
-                <div className='flex flex-col h-20'>
-                    <h1 className='font-roboto-bold text-lg'>Guardian SMS Notification</h1>
-                    <div className='flex flex-row my-4 w-full items-center justify-between'>
-                        <div className='flex flex-row w-60 items-center gap-1'>
-                            <input
-                                value={query}
-                                onChange={(e) => {
-                                    const query = e.target.value
-                                    setQuery(query)
-                                    setSearchItems(search(query))
-                                }}
-                                className='px-2 text-sm rounded-md h-8 w-52 border focus:outline-none'
-                                placeholder='Search student...' />
-                            {query != '' && <p
-                                onClick={() => { setQuery('') }}
-                                className='text-sm cursor-pointer opacity-60'>clear</p>}
+        <div className='w-full h-full flex flex-row gap-2'>
+            <div className='w-full h-full bg-white border shadow-sm rounded-lg py-2 px-4'>
+                <div className='font-roboto text-[#607d8b] flex flex-col p-4 gap-2 w-full h-full'>
+                    <div className='flex flex-col h-10'>
+                        <h1 className='font-roboto-bold text-lg'>Guardian SMS Report</h1>
+                    </div>
+                    <div className='w-full h-full'>
+                        {
+                            fetchState != 1 ?
+                                <div className='h-full w-full flex items-center justify-center'>
+                                    {StateBuilder(fetchState)}
+                                </div> :
+
+                                <div className='flex flex-col gap-2 h-[400px] overflow-auto'>
+                                    {
+                                        !records[format(date, 'yyyy/MM/dd')] ? <p className='py-40 text-center'>No records...</p> :
+                                            records[format(date, 'yyyy/MM/dd')].filter((item) => item.sms && item.student.guardian).length == 0 ? <p className='py-40 text-center'>No records...</p> :
+                                                records[format(date, 'yyyy/MM/dd')].filter((item) => item.sms).map((items) => {
+                                                    return (
+                                                        <div className='flex flex-col px-4 py-4 h-36 w-full shadow-sm border rounded-[10px]'>
+                                                            <div className='flex flex-row text-[22px] items-center gap-2'>
+                                                                <CampaignOutlined fontSize='inherit' className='' />
+                                                                <h1 className='font-roboto-bold text-base'>Guardian Report</h1>
+                                                            </div>
+                                                            {messageConstructor(items)}
+                                                            <p className='py-1 text-sm'>{formatDistance(items.dateRecord.toDate(), new Date(), { addSuffix: true })}</p>
+                                                        </div>
+                                                    )
+                                                })
+                                    }
+                                </div>
+                        }
+                    </div>
+
+                </div>
+            </div>
+            <div className='w-[500px] h-full bg-white border shadow-sm rounded-lg py-2 px-4'>
+                <div className='font-roboto text-[#607d8b] flex flex-col p-4 gap-2 w-full'>
+                    <div className='flex flex-col'>
+                        <h1 className='font-roboto-bold text-lg'>SMS Balance</h1>
+                        <div className='flex flex-col w-full items-center justify-center py-7'>
+                            <h1 className='font-roboto text-3xl'>{credits} credits</h1>
+                            <p className='text-sm py-4'>1 credit is equivalent to 1 SMS.</p>
+                        </div>
+                        <h1 className='py-4 font-roboto-bold text-lg'>SMS Service</h1>
+                        <div className='w-full flex flex-row gap-2 items-center'>
+                            <Switch checked={sms} size='small' onChange={(e) => {
+                                setSms(e.target.checked)
+                            }} />
+                            <p className='text-sm'>{`SMS service ${sms ? 'enabled' : 'disabled'}.`}</p>
                         </div>
                     </div>
+
                 </div>
-                <DataTable
-                    className="font-roboto rounded-md"
-                    columns={columns}
-                    data={guardians}
-                    customStyles={
-                        {
-                            rows: {
-                                style: {
-                                    'color': '#607d8b',
-                                    'font-family': 'Roboto',
-                                    'font-size': '14px'
-                                },
-                            },
-                            headCells: {
-                                style: {
-                                    'color': '#607d8b',
-                                    'font-family': 'Roboto',
-                                    'font-size': '14px',
-                                    'font-weight': 'bold'
-                                },
-                            }
-                        }
-                    }
-                    persistTableHead
-                    progressPending={fetchState == 0 ? true : false}
-                    progressComponent={<Loader />}
-                    fixedHeader
-                    fixedHeaderScrollHeight="370px"
-                />
             </div>
         </div>
     )

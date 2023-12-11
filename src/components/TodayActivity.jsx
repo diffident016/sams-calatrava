@@ -10,7 +10,7 @@ function TodayActivity({ recordFetch, records }) {
         const states = {
             "2": {
                 icon: <Upcoming />,
-                text: 'No entries'
+                text: 'No activities yet'
             },
             "-1": {
                 icon: <Error />,
@@ -23,8 +23,8 @@ function TodayActivity({ recordFetch, records }) {
         }
 
         return (
-            <div className='flex flex-col h-full justify-center items-center gap-4 text-white'>
-                {states[`${state}`].icon}
+            <div className='flex flex-col h-full justify-center items-center gap-4 text-[#607d8b]'>
+                {/* {states[`${state}`].icon} */}
                 <p className='text-sm'>{states[`${state}`].text}</p>
             </div>
         )
@@ -54,7 +54,7 @@ function TodayActivity({ recordFetch, records }) {
                                                             {i != (records[format(new Date(), 'yyyy/MM/dd')].length) - 1 && <div className='my-[2px] w-[2px] h-full bg-[#49a54d]/50'></div>}
                                                         </div>
                                                         <div className='flex flex-col h-full mt-[-6px]'>
-                                                            <h1 className='font-roboto-bold text-sm'>{record.name}</h1>
+                                                            <h1 className='font-roboto-bold text-sm'>{record.student.name}</h1>
                                                             <label className='flex items-center text-xs gap-1'>
                                                                 <AccessTime fontSize='inherit' />
                                                                 <span> {format(record.dateRecord.toDate(), 'hh:mm a')}</span>

@@ -71,21 +71,17 @@ function Guardians({
             {
                 name: "Actions",
                 cell: function (row) {
-
-                    let data = row.data
-                    data['docId'] = row.docId
-
                     return (
                         <div className="flex flex-row w-[100px] h-full items-center text-[20px] gap-2">
                             <Edit
                                 onClick={() => {
-                                    setEditGuardian(data)
+                                    setEditGuardian(row)
                                     setAddGuardian(true)
                                 }}
                                 className="cursor-pointer" fontSize="inherit" />
                             <div>|</div>
                             <Delete onClick={() => {
-                                setSelectedRow(data.docId)
+                                setSelectedRow(row.docId)
                                 setShowDialog(true)
                             }} className="cursor-pointer" fontSize="inherit" />
                         </div>
@@ -135,7 +131,7 @@ function Guardians({
                     noDataComponent={
                         <EmptyTable
                             addEntry={setAddGuardian}
-                            message={'The are no guardians on the record.'}
+                            message={'There are no guardians on the record.'}
                             cta={'Add Guardian'} />}
                     fixedHeader
                     fixedHeaderScrollHeight="370px"

@@ -11,7 +11,7 @@ import AddStudent from '../components/AddStudent';
 import UserAlert from '../components/UserAlert';
 import { Alert } from '../models/Alert';
 import AddGuardian from '../components/AddGuardian';
-import { getAllRecords, getAllStudents, onSnapshot, getAllGuardians } from '../api/Service';
+import { getAllRecords, getAllStudents, onSnapshot, getAllGuardians, orderBy } from '../api/Service';
 import { format } from 'date-fns'
 
 function Homepage({ profile, userType }) {
@@ -29,6 +29,7 @@ function Homepage({ profile, userType }) {
     const [studentFetch, setStudentFetch] = useState(0)
     const [guardianFetch, setGuardianFetch] = useState(0)
     const [guardiansEntry, setGuardiansEntry] = useState(0)
+    const [sms, setSms] = useState(true)
 
     const { alert, setAlert, type } = Alert();
 
@@ -47,25 +48,31 @@ function Homepage({ profile, userType }) {
                     return
                 }
 
-                const guardians = snapshot.docs.map((doc, index) => {
+                var guardians = snapshot.docs.map((doc) => {
                     const data = doc.data()['guardian'];
 
                     return {
-                        no: index + 1,
                         docId: doc.id,
+                        label: data.firstname + " " + data.mi + " " + data.lastname,
                         name: data.firstname + " " + data.mi + " " + data.lastname,
+                        firstname: data.firstname,
+                        mi: data.mi,
+                        lastname: data.lastname,
                         phone: data.phone,
                         address: data.address,
                         dateAdded: data.dateAdded,
-                        data: data
                     };
                 });
 
-                const guardiansEntry = guardians.map((g) => {
-                    return g.name
-                })
+                guardians.sort((a, b) => b.dateAdded - a.dateAdded);
 
-                setGuardiansEntry(guardiansEntry)
+                guardians = guardians.map((doc, index) => {
+                    var data = doc;
+                    data['no'] = index + 1
+                    return data
+                });
+
+                setGuardiansEntry(guardians)
                 setGuardians(guardians)
                 setGuardianFetch(1)
             })
@@ -94,19 +101,30 @@ function Homepage({ profile, userType }) {
                     return
                 }
 
-                const students = snapshot.docs.map((doc, index) => {
+                var students = snapshot.docs.map((doc) => {
                     const data = doc.data()['student'];
 
                     return {
-                        no: index + 1,
                         docId: doc.id,
                         studentId: data.studentId,
+                        firstname: data.firstname,
+                        qr_data: data.qr_data,
+                        mi: data.mi,
+                        lastname: data.lastname,
                         grade_section: data.grade_section,
                         guardian: data.guardian,
+                        guardian_name: data.guardian_name,
                         name: data.firstname + " " + data.mi + " " + data.lastname,
                         dateAdded: data.dateAdded,
-                        data: data
                     };
+                });
+
+                students.sort((a, b) => b.dateAdded - a.dateAdded);
+
+                students = students.map((doc, index) => {
+                    var data = doc;
+                    data['no'] = index + 1
+                    return data
                 });
 
                 setStudents(students)
@@ -141,10 +159,10 @@ function Homepage({ profile, userType }) {
                     const data = doc.data()['record'];
 
                     return {
-                        studentId: data.studentId,
-                        name: data.name,
+                        student: data.student,
                         dateRecord: data.dateRecord,
-                        status: data.status
+                        status: data.status,
+                        sms: data.sms
                     }
                 });
 
@@ -216,6 +234,7 @@ function Homepage({ profile, userType }) {
                     type={type}
                     records={records}
                     fetchState={recordFetch}
+                    sms={sms}
                 />
         },
         {
@@ -224,6 +243,10 @@ function Homepage({ profile, userType }) {
                     <Guardians2
                         fetchState={guardianFetch}
                         guardians={guardians}
+                        records={records}
+                        recordFetch={recordFetch}
+                        sms={sms}
+                        setSms={setSms}
                     /> :
                     <Guardians1
                         setEditGuardian={setEditGuardian}
