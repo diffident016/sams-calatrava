@@ -10,14 +10,20 @@ function Guardians({ guardians, fetchState, records, recordFetch, sms, setSms })
     const [searchItems, setSearchItems] = useState([])
     const [credits, setCredits] = useState(0)
     const [date, setDate] = useState(new Date())
+    const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
+        setIsLoading(true)
+        setSms(false)
         getAccount().then((res) => {
             return res.json()
         }).then((res) => {
             if (res.credit_balance) {
                 setCredits(res.credit_balance)
             }
+
+            setIsLoading(false)
+            setSms(true)
         })
             .catch(err => console.error(err));
     }, [])
@@ -113,21 +119,32 @@ function Guardians({ guardians, fetchState, records, recordFetch, sms, setSms })
                 </div>
             </div>
             <div className='w-[500px] h-full bg-white border shadow-sm rounded-lg py-2 px-4'>
-                <div className='font-roboto text-[#607d8b] flex flex-col p-4 gap-2 w-full'>
-                    <div className='flex flex-col'>
-                        <h1 className='font-roboto-bold text-lg'>SMS Balance</h1>
-                        <div className='flex flex-col w-full items-center justify-center py-7'>
-                            <h1 className='font-roboto text-3xl'>{credits} credits</h1>
-                            <p className='text-sm py-4'>1 credit is equivalent to 1 SMS.</p>
-                        </div>
-                        <h1 className='py-4 font-roboto-bold text-lg'>SMS Service</h1>
-                        <div className='w-full flex flex-row gap-2 items-center'>
-                            <Switch checked={sms} size='small' onChange={(e) => {
-                                setSms(e.target.checked)
-                            }} />
-                            <p className='text-sm'>{`SMS service ${sms ? 'enabled' : 'disabled'}.`}</p>
-                        </div>
-                    </div>
+                <div className='font-roboto text-[#607d8b] flex flex-col p-4 gap-2 w-full h-full'>
+                    {
+                        isLoading ?
+                            <div className='flex flex-col h-full w-full items-center justify-center gap-4'>
+                                <>
+                                    <CircularProgress className='text-[#49a54d]' color='inherit' />
+                                    <p className='text-sm'>Loading service, please wait...</p>
+                                </>
+
+                            </div> :
+                            <div className='flex flex-col'>
+                                <h1 className='font-roboto-bold text-lg'>SMS Balance</h1>
+                                <div className='flex flex-col w-full items-center justify-center py-7'>
+                                    <h1 className='font-roboto text-3xl'>{credits} credits</h1>
+                                    <p className='text-sm py-4'>1 credit is equivalent to 1 SMS.</p>
+                                </div>
+                                <h1 className='py-4 font-roboto-bold text-lg'>SMS Service</h1>
+                                <div className='w-full flex flex-row gap-2 items-center'>
+                                    <Switch checked={sms} size='small' onChange={(e) => {
+                                        setSms(e.target.checked)
+                                    }} />
+                                    <p className='text-sm'>{`SMS service ${sms ? 'enabled' : 'disabled'}.`}</p>
+                                </div>
+                            </div>
+                    }
+
 
                 </div>
             </div>
