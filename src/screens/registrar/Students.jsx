@@ -79,7 +79,7 @@ function Students({ students, fetchState, setAddStudent, setEditStudent, setAler
                                 className="cursor-pointer" fontSize="inherit" />
                             <div>|</div>
                             <Delete onClick={() => {
-                                setSelectedRow(data.docId)
+                                setSelectedRow(row.docId)
                                 setShowDialog(true)
                             }} className="cursor-pointer" fontSize="inherit" />
                         </div>

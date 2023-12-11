@@ -22,6 +22,8 @@ function Statistics({ students, records, studentFetch, recordFetch }) {
             }
         }
 
+        console.log(state)
+
         return (
             <div className='flex flex-col h-full justify-center items-center gap-4 text-[#607d8b]'>
                 {/* {states[`${state}`].icon} */}
@@ -47,11 +49,13 @@ function Statistics({ students, records, studentFetch, recordFetch }) {
                 <h1 className='font-roboto-bold text-lg'>Statistics</h1>
                 <div className='flex flex-col gap-2 overflow-auto py-2 h-full'>
                     {
-                        (studentFetch != 1 && recordFetch != 0) ? StateBuilder(recordFetch) :
+                        (recordFetch != 1) ? StateBuilder(recordFetch) :
                             <>
                                 {
                                     Object.keys(records).map((r) => {
                                         const studentCount = students.length;
+
+                                        if (studentCount < 1) return
 
                                         const groupRecords = records[r].reduce((group, record) => {
                                             const { studentId } = record;
