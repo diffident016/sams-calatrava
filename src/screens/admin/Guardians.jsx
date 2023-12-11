@@ -1,9 +1,7 @@
 import React, { useMemo, useState, useEffect } from 'react'
-import DataTable from "react-data-table-component";
 import { format, formatDistance } from 'date-fns'
-import Loader from '../../components/Loader'
 import { KeyboardArrowDown, Upcoming, Campaign, CampaignOutlined } from '@mui/icons-material';
-import { getMessage, getAccount } from '../../api/SMSService';
+import { getAccount } from '../../api/SMSService';
 import { CircularProgress, Switch } from '@mui/material';
 
 function Guardians({ guardians, fetchState, records, recordFetch, sms, setSms }) {

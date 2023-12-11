@@ -1,24 +1,6 @@
 import { format } from "date-fns";
 
-const baseUrl = 'http://localhost:5000/api';
-
-const getMessage = async () => {
-
-    fetch('http://localhost:5000/api', {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
-    })
-        .then((res) => {
-
-            console.log(res.status)
-            return res.json()
-        }).then((res) => {
-            console.log(res)
-        })
-        .catch(err => console.error(err));
-}
+const baseUrl = import.meta.env.VITE_BASE_URL;
 
 const sendSMS = async (report) => {
 
@@ -36,8 +18,6 @@ const sendSMS = async (report) => {
 
     const msg = `Greetings! Your child ${student} ${status[report.status]} school on ${date} at ${time}. Best regards, CSHS.`
 
-    console.log(number)
-    console.log(msg)
     fetch(`${baseUrl}/send`, {
         method: 'POST',
         headers: {
@@ -64,4 +44,4 @@ const getAccount = async () => {
     })
 }
 
-export { getMessage, getAccount, sendSMS }
+export { getAccount, sendSMS }
