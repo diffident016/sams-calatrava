@@ -45,6 +45,13 @@ const getAllRecords = () => {
     return recordRef;
 }
 
+const getRecordsById = (studentId) => {
+    const recordRef = collection(db, "records");
+    console.log(studentId)
+
+    return query(recordRef, where('record.student.studentId', '==', studentId), orderBy('record.dateRecord', 'desc'))
+}
+
 const addStudent = (student) => {
 
     const id = String(Date.now()).slice(5, 13)
@@ -131,5 +138,6 @@ export {
     Timestamp,
     addRecord,
     getAllRecords,
+    getRecordsById,
     orderBy
 }

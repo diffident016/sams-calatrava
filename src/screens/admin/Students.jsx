@@ -1,15 +1,23 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useRef } from 'react'
 import DataTable from "react-data-table-component";
 import { format } from 'date-fns'
 import Loader from '../../components/Loader'
 import { QrCode } from '@mui/icons-material';
 import { Backdrop } from '@mui/material';
 import QRPreview from '../../components/QRPreview';
+import { Logs } from '../../components/Logs';
+import { useReactToPrint } from 'react-to-print';
+
 
 function Students({ students, fetchState }) {
 
     const [selectedRow, setSelectedRow] = useState('');
     const [open, setOpen] = useState(false);
+    const [logs, setLogs] = useState(null);
+    const componentRef = useRef();
+    const handlePrint = useReactToPrint({
+        content: () => componentRef.current,
+    });
 
     const handleClose = () => {
         setOpen(false);
@@ -28,22 +36,22 @@ function Students({ students, fetchState }) {
             {
                 name: "Student ID",
                 selector: (row) => row.studentId,
-                width: '130px'
+                width: '100px'
             },
             {
                 name: "Name",
                 selector: (row) => row.name,
-                width: '200px'
+                width: '150px'
             },
             {
                 name: "Grade & Section",
                 selector: (row) => row.grade_section,
-                width: '150px'
+                width: '140px'
             },
             {
                 name: "Guardian",
                 selector: (row) => (!row.guardian || row.guardian == "") ? 'Not specified' : row.guardian.name,
-                width: '160px'
+                width: '140px'
             },
             {
                 name: "Date Added",
@@ -54,18 +62,27 @@ function Students({ students, fetchState }) {
                 name: "Actions",
                 cell: function (row) {
                     return (
-                        <div
-                            onClick={() => {
-                                setSelectedRow(row.studentId)
-                                handleOpen()
-                            }}
-                            className="flex cursor-pointer flex-row w-[100px] h-full items-center text-[20px] gap-2">
-                            <QrCode fontSize="inherit" />
-                            <p className='text-xs'>QR Code</p>
+                        <div className='flex flex-row items-center'>
+                            <div
+                                onClick={() => {
+                                    setSelectedRow(row.studentId)
+                                    handleOpen()
+                                }}
+                                className="flex cursor-pointer flex-row w-[100px] h-full items-center text-[20px] gap-2">
+                                <QrCode fontSize="inherit" />
+                                <p className='text-xs'>QR Code</p>
+                            </div>
+                            <div
+                                onClick={() => {
+                                    setLogs(row.studentId)
+                                }}
+                                className='w-16 text-white bg-[#49a54d] text-center py-1 rounded-lg text-xs cursor-pointer'>
+                                Logs
+                            </div>
                         </div>
                     )
                 },
-                width: '120px'
+                width: '200px'
             },
         ]
     );
@@ -111,6 +128,17 @@ function Students({ students, fetchState }) {
                     onClick={handleClose}
                 >
                     <QRPreview data={selectedRow} />
+                </Backdrop>
+                <Backdrop
+                    sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                    open={!!logs}
+                    onClick={handleClose}
+                >
+                    {!!logs && <Logs print={() => {
+                        handlePrint()
+                    }} ref={componentRef} studentId={logs} close={() => {
+                        setLogs(null)
+                    }} />}
                 </Backdrop>
             </div>
         </div>
