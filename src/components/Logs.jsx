@@ -1,15 +1,15 @@
 import { ArrowBack, Print } from '@mui/icons-material'
 import React, { useEffect, useState, forwardRef } from 'react'
-import { getRecordsById, onSnapshot } from '../api/Service';
+import { getRecordsByDay, getRecordsById, onSnapshot } from '../api/Service';
 import { format } from 'date-fns';
 
-export const Logs = forwardRef(({ close, studentId, print }, ref) => {
+export const Logs = forwardRef(({ close, studentId, print, all = false }, ref) => {
 
     const [fetchState, setFetchState] = useState(0);
     const [records, setRecords] = useState([]);
 
     useEffect(() => {
-        const query = getRecordsById(studentId);
+        let query = all ? getRecordsByDay() : getRecordsById(studentId);
 
         try {
             const unsub = onSnapshot(query, (snapshot) => {
@@ -27,7 +27,6 @@ export const Logs = forwardRef(({ close, studentId, print }, ref) => {
                 const data = snapshot.docs.map((doc) => doc.data());
                 setFetchState(1);
                 setRecords(data);
-                console.log(data)
             });
 
             return () => {
@@ -40,7 +39,7 @@ export const Logs = forwardRef(({ close, studentId, print }, ref) => {
 
     const column = [
         { name: "Time", width: 200 },
-        { name: "", width: 200 },
+        { name: "Name", width: 200 },
         { name: "Status", width: 200 }
     ]
 
@@ -62,13 +61,13 @@ export const Logs = forwardRef(({ close, studentId, print }, ref) => {
                 </div>
 
             </div>
-            <div ref={ref} className='w-full'>
-                <h1 className='text-center text-lg'>Student Logs</h1>
+            <div ref={ref} className='w-full flex flex-col items-center'>
+                <h1 className='text-center text-lg font-bold'>Student Logs</h1>
                 <div className='py-6 px-4 flex flex-row justify-between'>
                     {
                         column.map((v) => {
                             return (
-                                <p className='text-sm' style={{ width: v.width }}>{v.name}</p>
+                                <p className='text-sm font-bold' style={{ width: v.width }}>{v.name}</p>
                             );
                         })
                     }

@@ -116,6 +116,7 @@ function Homepage({ profile, userType }) {
                         guardian_name: data.guardian_name,
                         name: data.firstname + " " + data.mi + " " + data.lastname,
                         dateAdded: data.dateAdded,
+                        gender: data.gender
                     };
                 });
 

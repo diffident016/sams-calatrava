@@ -47,9 +47,18 @@ const getAllRecords = () => {
 
 const getRecordsById = (studentId) => {
     const recordRef = collection(db, "records");
-    console.log(studentId)
 
     return query(recordRef, where('record.student.studentId', '==', studentId), orderBy('record.dateRecord', 'desc'))
+}
+
+const getRecordsByDay = () => {
+
+    const today = new Date();
+    today.setUTCHours(0, 0, 0, 0);
+
+    const recordRef = collection(db, "records");
+
+    return query(recordRef, where('record.dateRecord', '>', today), orderBy('record.dateRecord', 'desc'))
 }
 
 const addStudent = (student) => {
@@ -139,5 +148,6 @@ export {
     addRecord,
     getAllRecords,
     getRecordsById,
+    getRecordsByDay,
     orderBy
 }

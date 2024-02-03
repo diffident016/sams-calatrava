@@ -41,7 +41,7 @@ function Students({ students, fetchState }) {
             {
                 name: "Name",
                 selector: (row) => row.name,
-                width: '150px'
+                width: '160px'
             },
             {
                 name: "Grade & Section",
@@ -51,7 +51,7 @@ function Students({ students, fetchState }) {
             {
                 name: "Guardian",
                 selector: (row) => (!row.guardian || row.guardian == "") ? 'Not specified' : row.guardian.name,
-                width: '140px'
+                width: '160px'
             },
             {
                 name: "Date Added",

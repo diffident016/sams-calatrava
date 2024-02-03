@@ -3,6 +3,7 @@ import Today from '../components/Today'
 import Statistics from '../components/Statistics'
 import TodayActivity from '../components/TodayActivity'
 import AdminTable from '../components/AdminTable'
+import Demographics from '../components/Demographics'
 
 function Dashboard({ students, records, studentFetch, recordFetch }) {
     return (
@@ -19,6 +20,12 @@ function Dashboard({ students, records, studentFetch, recordFetch }) {
                         recordFetch={recordFetch}
                         records={records} />
                 </div>
+                <Demographics
+                    recordFetch={recordFetch}
+                    studentFetch={studentFetch}
+                    records={records}
+                    students={students}
+                />
                 <div className='w-full h-full flex flex-row gap-5'>
                     <AdminTable
                         fetchState={recordFetch}

@@ -38,17 +38,17 @@ function Students({ students, fetchState, setAddStudent, setEditStudent, setAler
             {
                 name: "No.",
                 selector: (row) => row.no,
-                width: '80px'
+                width: '60px'
             },
             {
                 name: "Student ID",
                 selector: (row) => row.studentId,
-                width: '130px'
+                width: '100px'
             },
             {
                 name: "Name",
                 selector: (row) => row.name,
-                width: '180px'
+                width: '160px'
             },
             {
                 name: "Grade & Section",
@@ -58,12 +58,17 @@ function Students({ students, fetchState, setAddStudent, setEditStudent, setAler
             {
                 name: "Guardian",
                 selector: (row) => (!row.guardian || row.guardian == "") ? 'Not specified' : row.guardian.name,
-                width: '180px'
+                width: '160px'
+            },
+            {
+                name: "Gender",
+                selector: (row) => row.gender,
+                width: '100px'
             },
             {
                 name: "Date Added",
                 selector: (row) => format(row.dateAdded.toDate(), 'LL/dd/yyyy'),
-                width: '130px'
+                width: '120px'
             },
             {
                 name: "Actions",

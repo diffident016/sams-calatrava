@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect, useMemo, useRef } from 'react'
 import DataTable from "react-data-table-component";
 import { QrScanner } from '@yudiel/react-qr-scanner';
 import { format, differenceInMinutes } from 'date-fns'
@@ -7,12 +7,15 @@ import { DateCalendar } from '@mui/x-date-pickers';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
-import { KeyboardArrowDown } from '@mui/icons-material';
+import { History, KeyboardArrowDown } from '@mui/icons-material';
 import { sendSMS } from '../api/SMSService';
+import { Backdrop } from '@mui/material';
+import { Logs } from '../components/Logs';
+import { useReactToPrint } from 'react-to-print';
 
 function CheckAttendance({ students = [], records, fetchState, setAlert, type, setShowAlert, sms }) {
 
-    const [delay, setDelay] = useState(false)
+    const [logs, setLogs] = useState(null)
     const [videoSelect, setVideoSelect] = useState([])
     const [labels, setLabels] = useState([])
     const [scanned, setScanned] = useState(null)
@@ -20,6 +23,10 @@ function CheckAttendance({ students = [], records, fetchState, setAlert, type, s
     const [query, setQuery] = useState('')
     const [date, setDate] = useState(new Date())
     const [datepick, setDatePick] = useState(false)
+    const componentRef = useRef();
+    const handlePrint = useReactToPrint({
+        content: () => componentRef.current,
+    });
 
     const status = [
         {
@@ -206,10 +213,17 @@ function CheckAttendance({ students = [], records, fetchState, setAlert, type, s
     return (
         <div className='w-full h-full text-[#607d8b]'>
             <div className='flex flex-row w-full h-full gap-2'>
-                <div className='flex-1 h-full flex flex-col bg-white border shadow-sm rounded-lg p-4 gap-4'>
-                    <div className='h-16 flex flex-col'>
-                        <h1 className='font-roboto-bold'>Recorded Attendance</h1>
-                        <div className='flex flex-row my-4 w-full items-center justify-between'>
+                <div className='flex-1 h-full flex flex-col bg-white border shadow-sm rounded-lg p-4'>
+                    <div className='flex flex-row pt-2 mb-2 h-12 justify-between '>
+                        <h1 className='font-roboto-bold text-lg'>Recorded Attendance</h1>
+                        <p
+                            onClick={() => {
+                                setLogs(true)
+                            }}
+                            className='flex cursor-pointer hover:bg-black/10 flex-row items-center rounded-lg justify-center gap-1 text-sm w-20 border h-8'><span><History fontSize='small' /></span>Logs</p>
+                    </div>
+                    <div className='flex flex-col'>
+                        <div className='flex flex-row w-full items-center justify-between'>
                             <div className='flex flex-row w-60 items-center gap-1'>
                                 <input
                                     value={query}
@@ -291,7 +305,7 @@ function CheckAttendance({ students = [], records, fetchState, setAlert, type, s
                 </div>
                 <div className='flex flex-col w-1/3 h-full gap-2'>
                     <div className='flex-1 h-full bg-white border shadow-sm rounded-lg py-4 px-4'>
-                        <h1 className='font-roboto-bold text-sm'>QR Scanner</h1>
+                        <h1 className='font-roboto-bold'>QR Scanner</h1>
                         <div className='flex w-full justify-center py-2'>
                             <div className='w-[250px]'>
                                 <QrScanner
@@ -304,7 +318,7 @@ function CheckAttendance({ students = [], records, fetchState, setAlert, type, s
 
                     </div>
                     <div className='flex flex-col h-1/3 bg-white border shadow-sm rounded-lg p-4'>
-                        <h1 className='font-roboto-bold text-sm'>Scanned Data</h1>
+                        <h1 className='font-roboto-bold'>Scanned Data</h1>
                         <div className='flex flex-col font-roboto gap-1 px-2 py-4'>
 
                             {
@@ -316,18 +330,31 @@ function CheckAttendance({ students = [], records, fetchState, setAlert, type, s
                             {
                                 (scanned && scanned.status == 2) && (
                                     <div className='w-full h-full flex flex-col gap-2 text-[#607d8b]'>
-                                        <p className='text-xs'>Student ID: <span className='font-roboto-bold'>{scanned.student.studentId}</span></p>
-                                        <p className='text-xs'>Student Name: <span className='font-roboto-bold'>{scanned.student.name}</span></p>
-                                        <p className='text-xs'>Grade&Section: <span className='font-roboto-bold'>{scanned.student.grade_section}</span></p>
-                                        <p className='text-xs'>Student Status: {0}</p>
+                                        <p className='text-sm'>Student ID: <span className='font-roboto-bold'>{scanned.student.studentId}</span></p>
+                                        <p className='text-sm'>Student Name: <span className='font-roboto-bold'>{scanned.student.name}</span></p>
+                                        <p className='text-sm'>Grade&Section: <span className='font-roboto-bold'>{scanned.student.grade_section}</span></p>
                                     </div>
                                 )
                             }
-
-
                         </div>
                     </div>
+
                 </div>
+                <Backdrop
+                    sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                    open={!!logs}
+                >
+                    {!!logs &&
+                        <Logs
+                            print={() => {
+                                handlePrint()
+                            }}
+                            ref={componentRef}
+                            all={logs}
+                            close={() => {
+                                setLogs(null)
+                            }} />}
+                </Backdrop>
             </div>
 
 
