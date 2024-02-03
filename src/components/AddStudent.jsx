@@ -33,7 +33,8 @@ function AddStudent({
             guardian: editStudent.guardian,
             dateAdded: editStudent.dateAdded,
             studentId: editStudent.studentId,
-            qr_data: editStudent.qr_data
+            qr_data: editStudent.qr_data,
+            gender: editStudent.gender
         })
     }, [editStudent])
 
@@ -83,7 +84,8 @@ function AddStudent({
             lastname: '',
             grade_section: '',
             guardian: null,
-            guardian_name: ''
+            guardian_name: '',
+            gender: ''
         })
 
         setEditStudent(null)
@@ -95,7 +97,7 @@ function AddStudent({
         <>
             {show && (<div className='z-20 absolute h-full w-full bg-[#f5f7f8]/80'>
                 <div className='w-full h-full flex items-center justify-center'>
-                    <div className='flex flex-col p-6 w-[450px] h-[500px] bg-white border shadow-sm rounded-lg text-[#607d8b] font-roboto'>
+                    <div className='flex flex-col p-6 w-[450px] h-[560px] bg-white border shadow-sm rounded-lg text-[#607d8b] font-roboto'>
                         <div className='flex flex-row justify-between'>
                             <PersonAdd color='inherit' />
                             <Close onClick={() => {
@@ -141,13 +143,41 @@ function AddStudent({
                                     className='w-full text-sm h-9 border border-[#cecece]  rounded-md focus:outline-none px-2' />
                             </div>
                             <div className='flex-1'>
+                                <label className='py-1 text-xs font-roboto-bold'>Gender <span className='text-[#dc2626]'>*</span></label>
+                                <Autocomplete
+                                    id="guardian-box"
+                                    required={true}
+                                    value={student.gender}
+                                    className='text-white'
+                                    options={['Male', 'Female']}
+                                    sx={{ width: '100%', height: '36px' }}
+                                    size='small'
+                                    inputValue={student.gender}
+                                    onInputChange={(event, newInputValue) => {
+                                        updateStudent({ gender: newInputValue })
+                                    }}
+                                    renderInput={(params) => <TextField {...params} />}
+                                />
+                            </div>
+                            <div className='flex-1'>
                                 <label className='py-1 text-xs font-roboto-bold'>Grade & Section <span className='text-[#dc2626]'>*</span></label>
                                 <Autocomplete
                                     id="guardian-box"
                                     required={true}
                                     value={student.grade_section}
                                     className='text-white'
-                                    options={['Grade 11 - CSS', 'Grade 12 - CSS']}
+                                    options={
+                                        [
+                                            'Grade 11 - CSS',
+                                            'Grade 11 - ABM',
+                                            'Grade 11 - HUMSS',
+                                            'Grade 11 - STEM',
+                                            'Grade 12 - CSS',
+                                            'Grade 12 - ABM',
+                                            'Grade 12 - HUMSS',
+                                            'Grade 12 - STEM',
+                                        ]
+                                    }
                                     sx={{ width: '100%', height: '36px' }}
                                     size='small'
                                     inputValue={student.grade_section}
@@ -182,6 +212,7 @@ function AddStudent({
                                     }}
                                 />
                             </div>
+
                             <div className='flex flex-row w-full py-6 justify-end text-white text-sm font-roboto-bold gap-2'>
                                 <button type='submit' className='w-20 h-8 bg-[#49a54d] rounded-md'>{!update ? 'Add' : 'Update'}</button>
                                 <button onClick={() => {

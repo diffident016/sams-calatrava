@@ -14,7 +14,8 @@ export function Student() {
             qr_data: null,
             guardian_name: '',
             guardian: '',
-            dateAdded: ''
+            dateAdded: '',
+            gender: null
         });
 
     return { student, updateStudent };
