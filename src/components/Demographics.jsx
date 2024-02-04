@@ -119,7 +119,7 @@ function Demographics({ students, records, studentFetch, recordFetch }) {
     return (
         <div className='w-full h-full flex flex-row gap-5 font-roboto text-[#607d8b]'>
             <div className='w-2/3 h-96 border shadow-sm bg-white rounded-xl py-4 '>
-                <h1 className='px-6 font-roboto-bold text-lg'>Demographics <span className='text-sm font-light'>(Today's Activity by Gender)</span></h1>
+                <h1 className='px-6 font-roboto-bold text-lg'>Demographics <span className='text-sm font-light'>(Activity by Gender)</span></h1>
                 <ResponsiveContainer className='pt-4 text-sm' width="100%" height="90%">
                     <BarChart
                         width={500}
