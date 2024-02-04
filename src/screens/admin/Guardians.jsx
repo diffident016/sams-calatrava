@@ -14,7 +14,6 @@ function Guardians({ guardians, fetchState, records, recordFetch, sms, setSms })
 
     useEffect(() => {
         setIsLoading(true)
-        setSms(false)
         getAccount().then((res) => {
             return res.json()
         }).then((res) => {
@@ -23,7 +22,6 @@ function Guardians({ guardians, fetchState, records, recordFetch, sms, setSms })
             }
 
             setIsLoading(false)
-            setSms(true)
         })
             .catch(err => console.error(err));
     }, [])
