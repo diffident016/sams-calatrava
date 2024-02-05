@@ -172,10 +172,12 @@ function AddStudent({
                                             'Grade 11 - ABM',
                                             'Grade 11 - HUMSS',
                                             'Grade 11 - STEM',
+                                            'Grade 11 - TVL',
                                             'Grade 12 - CSS',
                                             'Grade 12 - ABM',
                                             'Grade 12 - HUMSS',
                                             'Grade 12 - STEM',
+                                            'Grade 12 - TVL',
                                         ]
                                     }
                                     sx={{ width: '100%', height: '36px' }}
