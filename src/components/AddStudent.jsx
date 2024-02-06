@@ -168,16 +168,22 @@ function AddStudent({
                                     className='text-white'
                                     options={
                                         [
-                                            'Grade 11 - CSS',
                                             'Grade 11 - ABM',
                                             'Grade 11 - HUMSS',
                                             'Grade 11 - STEM',
-                                            'Grade 11 - TVL',
-                                            'Grade 12 - CSS',
+                                            'Grade 11 - TVL - CSS',
+                                            'Grade 11 - TVL - SMAW',
+                                            'Grade 11 - TVL - EIM',
+                                            'Grade 11 - TVL - House Keeping',
+                                            'Grade 11 - TVL - Cookery',
                                             'Grade 12 - ABM',
                                             'Grade 12 - HUMSS',
                                             'Grade 12 - STEM',
-                                            'Grade 12 - TVL',
+                                            'Grade 12 - TVL - CSS',
+                                            'Grade 12 - TVL - SMAW',
+                                            'Grade 12 - TVL - EIM',
+                                            'Grade 12 - TVL - House Keeping',
+                                            'Grade 12 - TVL - Cookery',
                                         ]
                                     }
                                     sx={{ width: '100%', height: '36px' }}
