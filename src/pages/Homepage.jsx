@@ -30,6 +30,7 @@ function Homepage({ profile, userType }) {
     const [guardianFetch, setGuardianFetch] = useState(0)
     const [guardiansEntry, setGuardiansEntry] = useState(0)
     const [sms, setSms] = useState(true)
+    const [rawRecords, setRawRecords] = useState([]);
 
     const { alert, setAlert, type } = Alert();
 
@@ -182,6 +183,7 @@ function Homepage({ profile, userType }) {
                     return group;
                 }, {});
 
+                setRawRecords(records);
                 setRecords(group)
                 setRecordFetch(1)
             })
@@ -204,6 +206,7 @@ function Homepage({ profile, userType }) {
                     studentFetch={studentFetch}
                     records={records}
                     recordFetch={recordFetch}
+                    rawRecords={rawRecords}
                 />
         },
         {

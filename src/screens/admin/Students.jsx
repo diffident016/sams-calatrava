@@ -31,7 +31,7 @@ function Students({ students, fetchState }) {
             {
                 name: "No.",
                 selector: (row) => row.no,
-                width: '80px'
+                width: '60px'
             },
             {
                 name: "Student ID",
@@ -41,12 +41,12 @@ function Students({ students, fetchState }) {
             {
                 name: "Name",
                 selector: (row) => row.name,
-                width: '160px'
+                width: '180px'
             },
             {
                 name: "Grade & Section",
                 selector: (row) => row.grade_section,
-                width: '140px'
+                width: '180px'
             },
             {
                 name: "Guardian",
@@ -82,19 +82,19 @@ function Students({ students, fetchState }) {
                         </div>
                     )
                 },
-                width: '200px'
+                width: '180px'
             },
         ]
     );
 
     return (
-        <div className='w-full h-full bg-white border shadow-sm rounded-lg py-2 px-4'>
-            <div className='font-roboto text-[#607d8b] flex flex-col p-4 gap-2 w-full'>
+        <div className='w-full h-full bg-white border shadow-sm rounded-lg py-2 px-4 overflow-hidden'>
+            <div className='font-roboto text-[#607d8b] flex flex-col p-4 gap-2 w-full h-full'>
                 <div className='flex flex-row justify-between py-2'>
                     <h1 className='font-roboto-bold text-lg'>Student Records</h1>
                 </div>
                 <DataTable
-                    className="font-roboto rounded-md"
+                    className="font-roboto rounded-md h-full overflow-hidden"
                     columns={columns}
                     data={students}
                     customStyles={
@@ -120,7 +120,8 @@ function Students({ students, fetchState }) {
                     progressPending={fetchState == 0 ? true : false}
                     progressComponent={<Loader />}
                     fixedHeader
-                    fixedHeaderScrollHeight="370px"
+                    allowOverflow
+                    // fixedHeaderScrollHeight="370px"
                 />
                 <Backdrop
                     sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}

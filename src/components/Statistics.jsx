@@ -1,9 +1,31 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Upcoming, Error } from '@mui/icons-material';
 import { CircularProgress, LinearProgress } from '@mui/material';
 import { format, isToday, isYesterday, parse } from 'date-fns'
 
-function Statistics({ students, records, studentFetch, recordFetch }) {
+function Statistics({ students, records, studentFetch, recordFetch, rawRecords }) {
+
+    const [filteredRecords, setFilteredRecords] = useState([]);
+
+    useEffect(() => {   
+        if(students.length < 1) return;
+
+        let temp = students.map((item) => {
+            return item.studentId;
+        });
+
+        temp = rawRecords.filter((r) => temp.includes(r.student.studentId));
+
+        const group = temp.reduce((group, record) => {
+            const { dateRecord } = record;
+            group[format(dateRecord.toDate(), 'yyyy/MM/dd')] = group[format(dateRecord.toDate(), 'yyyy/MM/dd')] ?? [];
+            group[format(dateRecord.toDate(), 'yyyy/MM/dd')].push(record);
+            return group;
+        }, {});
+
+        setFilteredRecords(group);
+
+    }, [students, rawRecords]);
 
     const StateBuilder = (state) => {
 
@@ -21,8 +43,6 @@ function Statistics({ students, records, studentFetch, recordFetch }) {
                 text: 'Loading statistics...'
             }
         }
-
-        console.log(state)
 
         return (
             <div className='flex flex-col h-full justify-center items-center gap-4 text-[#607d8b]'>
@@ -52,18 +72,18 @@ function Statistics({ students, records, studentFetch, recordFetch }) {
                         (recordFetch != 1) ? StateBuilder(recordFetch) :
                             <>
                                 {
-                                    Object.keys(records).map((r) => {
+                                    Object.keys(filteredRecords).map((r) => {
                                         const studentCount = students.length;
 
                                         if (studentCount < 1) return
 
-                                        const groupRecords = records[r].reduce((group, record) => {
-                                            const { studentId } = record;
+                                        const groupRecords = filteredRecords[r].reduce((group, record) => {
+                                            const { studentId } = record.student;
                                             group[studentId] = group[studentId] ?? [];
                                             group[studentId].push(record);
                                             return group;
                                         }, {});
-
+                                        
                                         const recordCount = Object.keys(groupRecords).length
 
                                         return (

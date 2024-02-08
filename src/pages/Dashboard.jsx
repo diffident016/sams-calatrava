@@ -5,7 +5,7 @@ import TodayActivity from '../components/TodayActivity'
 import AdminTable from '../components/AdminTable'
 import Demographics from '../components/Demographics'
 
-function Dashboard({ students, records, studentFetch, recordFetch }) {
+function Dashboard({ students, records, studentFetch, recordFetch, rawRecords }) {
     return (
         <div className='w-full h-full overflow-auto'>
             <div className='flex flex-col h-full gap-5'>
@@ -15,7 +15,9 @@ function Dashboard({ students, records, studentFetch, recordFetch }) {
                         recordFetch={recordFetch}
                         studentFetch={studentFetch}
                         records={records}
-                        students={students} />
+                        students={students} 
+                        rawRecords={rawRecords}
+                        />
                     <TodayActivity
                         recordFetch={recordFetch}
                         records={records} />
