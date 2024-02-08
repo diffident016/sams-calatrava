@@ -19,12 +19,14 @@
 }
 
 ::-webkit-scrollbar {
-    width: 8px;
+    padding: 5px;
+    width: 4px;
     height: 8px;
     background-color: transparent;
+    margin-left: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
     border-radius: 10px;
-    background-color: transparent;
+    background-color: #d5d5d5;
 }
