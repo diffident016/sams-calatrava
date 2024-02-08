@@ -3,29 +3,7 @@ import { Upcoming, Error } from '@mui/icons-material';
 import { CircularProgress, LinearProgress } from '@mui/material';
 import { format, isToday, isYesterday, parse } from 'date-fns'
 
-function Statistics({ students, records, studentFetch, recordFetch, rawRecords }) {
-
-    const [filteredRecords, setFilteredRecords] = useState([]);
-
-    useEffect(() => {   
-        if(students.length < 1) return;
-
-        let temp = students.map((item) => {
-            return item.studentId;
-        });
-
-        temp = rawRecords.filter((r) => temp.includes(r.student.studentId));
-
-        const group = temp.reduce((group, record) => {
-            const { dateRecord } = record;
-            group[format(dateRecord.toDate(), 'yyyy/MM/dd')] = group[format(dateRecord.toDate(), 'yyyy/MM/dd')] ?? [];
-            group[format(dateRecord.toDate(), 'yyyy/MM/dd')].push(record);
-            return group;
-        }, {});
-
-        setFilteredRecords(group);
-
-    }, [students, rawRecords]);
+function Statistics({ students, recordFetch, records }) {
 
     const StateBuilder = (state) => {
 
@@ -72,12 +50,12 @@ function Statistics({ students, records, studentFetch, recordFetch, rawRecords }
                         (recordFetch != 1) ? StateBuilder(recordFetch) :
                             <>
                                 {
-                                    Object.keys(filteredRecords).map((r) => {
+                                    Object.keys(records).map((r) => {
                                         const studentCount = students.length;
 
                                         if (studentCount < 1) return
 
-                                        const groupRecords = filteredRecords[r].reduce((group, record) => {
+                                        const groupRecords = records[r].reduce((group, record) => {
                                             const { studentId } = record.student;
                                             group[studentId] = group[studentId] ?? [];
                                             group[studentId].push(record);
