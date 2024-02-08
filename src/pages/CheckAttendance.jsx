@@ -211,9 +211,9 @@ function CheckAttendance({ students = [], records, fetchState, setAlert, type, s
     );
 
     return (
-        <div className='w-full h-full text-[#607d8b]'>
-            <div className='flex flex-row w-full h-full gap-2'>
-                <div className='flex-1 h-full flex flex-col bg-white border shadow-sm rounded-lg p-4'>
+        <div className='w-full h-full text-[#607d8b] overflow-hidden'>
+            <div className='flex flex-row w-full h-full gap-2 '>
+                <div className='flex-1 h-full flex flex-col bg-white border shadow-sm rounded-lg pt-4 px-4 '>
                     <div className='flex flex-row pt-2 mb-2 h-12 justify-between '>
                         <h1 className='font-roboto-bold text-lg'>Recorded Attendance</h1>
                         <p
@@ -297,7 +297,6 @@ function CheckAttendance({ students = [], records, fetchState, setAlert, type, s
                                 }
                                 persistTableHead
                                 fixedHeader
-                                fixedHeaderScrollHeight="310px"
                                 pagination
                             />
                     }

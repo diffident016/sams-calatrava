@@ -176,6 +176,8 @@ function AddStudent({
                                             'Grade 11 - TVL - EIM',
                                             'Grade 11 - TVL - House Keeping',
                                             'Grade 11 - TVL - Cookery',
+                                            'Grade 11 - Tourism',
+                                            'Grade 11 - BPP/FBS',
                                             'Grade 12 - ABM',
                                             'Grade 12 - HUMSS',
                                             'Grade 12 - STEM',
@@ -184,6 +186,8 @@ function AddStudent({
                                             'Grade 12 - TVL - EIM',
                                             'Grade 12 - TVL - House Keeping',
                                             'Grade 12 - TVL - Cookery',
+                                            'Grade 12 - Tourism',
+                                            'Grade 12 - BPP/FBS',
                                         ]
                                     }
                                     sx={{ width: '100%', height: '36px' }}

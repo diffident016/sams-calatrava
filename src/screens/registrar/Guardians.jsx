@@ -93,8 +93,8 @@ function Guardians({
     );
 
     return (
-        <div className='w-full h-full bg-white border shadow-sm rounded-lg py-2 px-4'>
-            <div className='font-roboto text-[#607d8b] flex flex-col p-4 gap-2 w-full'>
+        <div className='w-full h-full bg-white border shadow-sm rounded-lg py-2 px-4 overflow-hidden'>
+            <div className='font-roboto text-[#607d8b] flex flex-col pt-4 px-4 gap-2 w-full h-full'>
                 <div className='flex flex-row justify-between py-2'>
                     <h1 className='font-roboto-bold text-lg'>Guardian Records</h1>
                     <div onClick={() => { setAddGuardian(true) }} className='flex flex-row gap-2 items-center mx-4 cursor-pointer'>
@@ -134,7 +134,6 @@ function Guardians({
                             message={'There are no guardians on the record.'}
                             cta={'Add Guardian'} />}
                     fixedHeader
-                    fixedHeaderScrollHeight="370px"
                     pagination
                 />
             </div>

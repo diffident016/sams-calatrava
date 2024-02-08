@@ -76,20 +76,20 @@ function Students({ students, fetchState }) {
                                 onClick={() => {
                                     setLogs(row.studentId)
                                 }}
-                                className='w-16 text-white bg-[#49a54d] text-center py-1 rounded-lg text-xs cursor-pointer'>
+                                className='w-12 text-white bg-[#49a54d] text-center py-1 rounded-lg text-xs cursor-pointer'>
                                 Logs
                             </div>
                         </div>
                     )
                 },
-                width: '180px'
+                width: '160px'
             },
         ]
     );
 
     return (
         <div className='w-full h-full bg-white border shadow-sm rounded-lg py-2 px-4 overflow-hidden'>
-            <div className='font-roboto text-[#607d8b] flex flex-col p-4 gap-2 w-full h-full'>
+            <div className='font-roboto text-[#607d8b] flex flex-col pt-4 px-4 gap-2 w-full h-full'>
                 <div className='flex flex-row justify-between py-2'>
                     <h1 className='font-roboto-bold text-lg'>Student Records</h1>
                 </div>
@@ -121,7 +121,7 @@ function Students({ students, fetchState }) {
                     progressComponent={<Loader />}
                     fixedHeader
                     allowOverflow
-                    // fixedHeaderScrollHeight="370px"
+                    pagination
                 />
                 <Backdrop
                     sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}

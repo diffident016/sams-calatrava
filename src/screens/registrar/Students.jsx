@@ -48,12 +48,12 @@ function Students({ students, fetchState, setAddStudent, setEditStudent, setAler
             {
                 name: "Name",
                 selector: (row) => row.name,
-                width: '160px'
+                width: '180px'
             },
             {
                 name: "Grade & Section",
                 selector: (row) => row.grade_section,
-                width: '150px'
+                width: '180px'
             },
             {
                 name: "Guardian",
@@ -63,7 +63,7 @@ function Students({ students, fetchState, setAddStudent, setEditStudent, setAler
             {
                 name: "Gender",
                 selector: (row) => row.gender,
-                width: '100px'
+                width: '80px'
             },
             {
                 name: "Date Added",
@@ -90,14 +90,14 @@ function Students({ students, fetchState, setAddStudent, setEditStudent, setAler
                         </div>
                     )
                 },
-                width: '100px'
+                width: '80px'
             },
         ]
     );
 
     return (
-        <div className='w-full h-full bg-white border shadow-sm rounded-lg py-2 px-4'>
-            <div className='font-roboto text-[#607d8b] flex flex-col p-4 gap-2 w-full'>
+        <div className='w-full h-full bg-white border shadow-sm rounded-lg py-2 px-4 overflow-hidden'>
+            <div className='font-roboto text-[#607d8b] flex flex-col pt-4 px-4 gap-2 w-full h-full'>
                 <div className='flex flex-row justify-between py-2'>
                     <h1 className='font-roboto-bold text-lg'>Student Records</h1>
                     <div onClick={() => { setAddStudent(true) }} className='flex flex-row gap-2 items-center mx-4 cursor-pointer'>
@@ -137,7 +137,6 @@ function Students({ students, fetchState, setAddStudent, setEditStudent, setAler
                             message={'There are no students on the record.'}
                             cta={'Add Student'} />}
                     fixedHeader
-                    fixedHeaderScrollHeight="370px"
                     pagination
                 />
             </div>

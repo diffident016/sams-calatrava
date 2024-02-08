@@ -29,7 +29,7 @@ function Sidebar({ userType, setScreen, screen }) {
     return (
         <div className='w-[26%] h-full rounded-2xl border border-[#cfd8dc] bg-white shadow-sm'>
             <div className='font-roboto-bold relative flex flex-col h-full items-center py-4'>
-                <img className='w-28 h-28' src={logo} />
+                <img className='w-32 h-32' src={logo} />
                 <h1 className='font-bold py-3 text-lg text-[#607d8b]'>{userType === 1 ? 'Admin' : 'Registrar'} Dashboard</h1>
                 <div className='grid grid-rows-4 w-full px-3 py-4 gap-1'>
                     {
