@@ -5,7 +5,8 @@ import { UserProfile } from '../models/UserProfile';
 import Homepage from '../pages/Homepage';
 import { getUser } from '../api/Service'
 import Loader from './Loader';
-import Login from '../pages/Login';
+
+import NewLogin from '../pages/NewLogin';
 
 function PrivateRoute({ children }) {
 
@@ -44,7 +45,7 @@ function PrivateRoute({ children }) {
         )
     }
 
-    return <Login />
+    return <NewLogin />
 
 }
 
