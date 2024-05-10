@@ -67,7 +67,7 @@ function Students({ students, fetchState }) {
           <div className="flex flex-row items-center">
             <div
               onClick={() => {
-                setSelectedRow(row.studentId);
+                setSelectedRow(row);
                 handleOpen();
               }}
               className="flex cursor-pointer flex-row w-[100px] h-full items-center text-[20px] gap-2"
@@ -161,9 +161,15 @@ function Students({ students, fetchState }) {
         <Backdrop
           sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
           open={open}
-          onClick={handleClose}
         >
-          <QRPreview data={selectedRow} />
+          {open && (
+            <QRPreview
+              data={selectedRow}
+              close={() => {
+                handleClose();
+              }}
+            />
+          )}
         </Backdrop>
         <Backdrop
           sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}

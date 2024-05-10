@@ -12,6 +12,7 @@ import { sendSMS } from "../api/SMSService";
 import { Backdrop } from "@mui/material";
 import { Logs } from "../components/Logs";
 import { useReactToPrint } from "react-to-print";
+import sound from "../assets/sound/qr-tone.mp3";
 
 function CheckAttendance({
   students = [],
@@ -35,6 +36,8 @@ function CheckAttendance({
     content: () => componentRef.current,
   });
 
+  const tone = new Audio(sound);
+
   const status = [
     {
       status: 0,
@@ -55,6 +58,7 @@ function CheckAttendance({
   ];
 
   const handleError = (e) => {
+    console.log(e);
     return setScanned(status[2]);
   };
 
@@ -84,6 +88,8 @@ function CheckAttendance({
   };
 
   const handleScan = async (data) => {
+    tone.play();
+
     let student = getStudent(data);
 
     setScanned(student);
